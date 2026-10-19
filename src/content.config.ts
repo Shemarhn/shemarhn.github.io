@@ -17,6 +17,13 @@ const insights = defineCollection({
     relatedServices: z.array(z.string()),
     relatedCases: z.array(z.string()),
     canonical: z.url().optional(),
+    social: z
+      .object({
+        enabled: z.boolean().default(true),
+        linkedin: z.string().max(3000).optional(),
+        x: z.string().max(240).optional(),
+      })
+      .optional(),
   }),
 });
 export const collections = { insights };
