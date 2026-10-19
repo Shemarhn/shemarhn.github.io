@@ -63,6 +63,15 @@ import Icon from '../../components/Icon.astro';
               .filter(Boolean)
               .join(' / ');
             card.append(label, quote, byline, context);
+            if (t.website) {
+              const profile = document.createElement('a');
+              profile.className = 'text-link';
+              profile.href = t.website;
+              profile.target = '_blank';
+              profile.rel = 'noopener noreferrer';
+              profile.textContent = 'Client website / profile ↗';
+              card.append(profile);
+            }
             if (t.case_study) {
               const link = document.createElement('a');
               link.className = 'text-link';
