@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shemar-marks",
+  "workers_dev": true,
   "main": "worker/entry.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
@@ -12,7 +13,7 @@
   },
   "vars": {
     "APP_ENV": "production",
-    "TURNSTILE_HOSTNAMES": "shemarmarks.com,www.shemarmarks.com",
+    "TURNSTILE_HOSTNAMES": "shemarmarks.com,www.shemarmarks.com,shemar-marks.shemarmarks.workers.dev",
     "EMAIL_PROVIDER": "gmail",
     "SOCIAL_MODE": "review",
   },
@@ -20,7 +21,7 @@
     {
       "binding": "DB",
       "database_name": "shemar-marks",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "7ac03e7c-e8ac-4798-9f1f-0f0e4e133ea9",
       "migrations_dir": "migrations",
     },
   ],
