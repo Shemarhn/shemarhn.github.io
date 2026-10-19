@@ -21,5 +21,9 @@ SOCIAL_MODE=review
 LINKEDIN_ACCESS_TOKEN=
 LINKEDIN_AUTHOR_URN=
 LINKEDIN_VERSION=
-# OAuth 2.0 user-context token with tweet.write/users.read. X developer access may be paid.
-X_USER_ACCESS_TOKEN=
+# X OAuth 1.0a user-context credentials. The app must have write permission.
+# X developer access is consumption-billed; do not purchase credits without owner approval.
+X_API_KEY=
+X_API_SECRET=
+X_ACCESS_TOKEN=
+X_ACCESS_TOKEN_SECRET=
