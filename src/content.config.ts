@@ -20,7 +20,8 @@ const insights = defineCollection({
     social: z
       .object({
         enabled: z.boolean().default(true),
-        linkedin: z.string().max(3000).optional(),
+        // Keep headroom for the canonical article link appended by the publisher.
+        linkedin: z.string().max(2800).optional(),
         x: z.string().max(240).optional(),
       })
       .optional(),
