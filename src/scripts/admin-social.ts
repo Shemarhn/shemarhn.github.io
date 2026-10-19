@@ -42,7 +42,7 @@ async function load() {
       const label = element('label', 'Platform copy');
       const textarea = element('textarea');
       textarea.value = String(post.content || '');
-      textarea.maxLength = post.platform === 'x' ? 240 : 3000;
+      textarea.maxLength = post.platform === 'x' ? 240 : 2800;
       textarea.rows = post.platform === 'x' ? 5 : 10;
       field.append(label, textarea);
       card.append(status, heading, link, field);
