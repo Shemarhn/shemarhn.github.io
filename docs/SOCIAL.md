@@ -45,6 +45,8 @@ OAuth 2.0 user tokens may need reauthorization/refresh depending on the X app co
 
 ## Duplicate and failure behavior
 
-`social_posts` has a unique `(article_slug, platform)` key. A published row is immutable to the automatic synchronizer, so scheduled runs cannot repost the same article. Retryable provider failures remain queued; permanent 4xx-style failures become `failed` and require investigation/reapproval. Missing configuration does not consume retry attempts.
+`social_posts` has a unique `(article_slug, platform)` key. A published row is immutable to the automatic synchronizer, so scheduled runs cannot repost the same article. Missing provider configuration leaves the draft/approval state intact and does not consume attempts.
+
+Once an actual provider publish request has been attempted, any error or lost response is treated as an **uncertain outcome** and the row becomes `failed`. The Worker does not automatically retry it because the provider may already have created the post even though the response was lost. Inspect the LinkedIn/X account first, then deliberately retry or mark the row appropriately. This fail-closed behavior favors avoiding duplicate public posts over unattended retries.
 
 Provider posting is intentionally independent of article publication. A social-provider outage never blocks the website deployment or removes the canonical article.
