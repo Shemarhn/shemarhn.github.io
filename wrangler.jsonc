@@ -39,7 +39,7 @@
         {
           "binding": "DB",
           "database_name": "shemar-marks-staging",
-          "database_id": "00000000-0000-0000-0000-000000000001",
+          "database_id": "0bf4e1e1-e3ec-44e6-84ff-710f1b820e86",
           "migrations_dir": "migrations",
         },
       ],
