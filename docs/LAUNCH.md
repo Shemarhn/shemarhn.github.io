@@ -11,7 +11,7 @@ The implementation is prepared for Cloudflare Workers with static assets. Nothin
 5. **Email:** launch with the Gmail adapter described in [EMAIL.md](EMAIL.md). Ensure `hello@shemarmarks.com` exists as a receiving address and is an authorized send-as identity for the Workspace account. Create the narrow Gmail API OAuth configuration, then store `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, and `GMAIL_REFRESH_TOKEN` as Worker secrets. Test send and reply behavior in staging before production.
 6. **Orbit CRM:** deploy/configure Orbit v0.2 and use its dedicated `/api/v1/website-inquiries` endpoint described in [CRM.md](CRM.md). Create a dedicated Orbit integration token with only `crm.write`; store it as `CRM_API_TOKEN`. Set `CRM_API_URL` to the full HTTPS endpoint. Keep `CRM_CREATE_OPPORTUNITY=false` initially. If Orbit/home infrastructure is temporarily unavailable, do not expose Proxmox management or block the website launch: D1 retains accepted inquiries and the CRM delivery job retries later.
 7. **Abuse protection:** store a high-entropy `IP_HASH_SALT`. It salts short-lived rate counters. Confirm staging isolation and no production local-testing variables.
-8. **Social syndication:** keep `SOCIAL_MODE=review` for launch. Configure LinkedIn only after obtaining the correct member authorization and current API version. Configure X only if suitable developer access is available and explicitly approved; do not purchase an API plan without owner approval. See [SOCIAL.md](SOCIAL.md). Social-provider outages must never block article publication.
+8. **Social syndication:** keep `SOCIAL_MODE=review` for launch. Configure LinkedIn only after obtaining the correct member authorization and current API version. Configure X only if suitable developer access is available and explicitly approved; do not purchase credits without owner approval. See [SOCIAL.md](SOCIAL.md). Social-provider outages must never block article publication.
 9. **Content:** review the three launch articles, certification wording, case-study facts, privacy notice, and approved pricing. Current pricing intentionally remains scope-based until owner-approved ranges are supplied.
 10. **Search/measurement:** after the production domain is healthy, verify Google Search Console and Bing Webmaster Tools, submit `/sitemap.xml`, inspect representative URLs, and optionally configure privacy-respectful analytics.
 
@@ -25,7 +25,10 @@ GMAIL_CLIENT_ID
 GMAIL_CLIENT_SECRET
 GMAIL_REFRESH_TOKEN
 LINKEDIN_ACCESS_TOKEN        # only when configured
-X_USER_ACCESS_TOKEN          # only when configured and approved
+X_API_KEY                    # only when configured and approved
+X_API_SECRET
+X_ACCESS_TOKEN
+X_ACCESS_TOKEN_SECRET
 ```
 
 Relevant non-secret variables include the D1 binding IDs in Wrangler, `TURNSTILE_HOSTNAMES`, `EMAIL_PROVIDER=gmail`, `SOCIAL_MODE=review`, `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD`, `ADMIN_EMAILS`, `CRM_API_URL`, `CRM_CREATE_OPPORTUNITY=false`, `LINKEDIN_AUTHOR_URN`, and a supported `LINKEDIN_VERSION` when LinkedIn is enabled. Turnstile site keys and the optional analytics token are public build variables, not credentials.
@@ -55,7 +58,7 @@ Do not enable production deployment until Wrangler database IDs and account reso
 
 ## Costs
 
-The launch target is no new recurring hosting bill: Cloudflare Workers/D1/Turnstile free allowances at low traffic plus the existing domain and Google Workspace account. Provider free allowances and terms can change, so check them at activation. Do not create a paid X developer plan, paid email provider, paid analytics service, or other recurring service without explicit owner approval.
+The launch target is no new recurring hosting bill: Cloudflare Workers/D1/Turnstile free allowances at low traffic plus the existing domain and Google Workspace account. Provider free allowances and terms can change, so check them at activation. Do not create a paid X developer balance, paid email provider, paid analytics service, or other recurring service without explicit owner approval.
 
 ## Old GitHub Pages URLs
 
