@@ -17,6 +17,14 @@ export interface Env {
   ACCESS_TEAM_DOMAIN?: string;
   ACCESS_AUD?: string;
   ADMIN_EMAILS?: string;
+  SOCIAL_MODE?: 'off' | 'review' | 'automatic';
+  LINKEDIN_ACCESS_TOKEN?: string;
+  LINKEDIN_AUTHOR_URN?: string;
+  LINKEDIN_VERSION?: string;
+  X_API_KEY?: string;
+  X_API_SECRET?: string;
+  X_ACCESS_TOKEN?: string;
+  X_ACCESS_TOKEN_SECRET?: string;
 }
 export type Lead = {
   name: string;
@@ -49,4 +57,16 @@ export type Job = {
   kind: 'crm' | 'email';
   attempts: number;
   lease_token: string;
+};
+export type SocialDraft = {
+  id: string;
+  article_slug: string;
+  platform: 'linkedin' | 'x';
+  content: string;
+  article_url: string;
+  status: 'draft' | 'approved' | 'published' | 'failed' | 'skipped';
+  attempts: number;
+  provider_post_id?: string | null;
+  provider_url?: string | null;
+  last_error?: string | null;
 };
