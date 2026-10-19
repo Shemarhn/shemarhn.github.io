@@ -33,10 +33,7 @@ async function publishLinkedIn(env: Env, post: SocialDraft) {
     signal: timeout(),
   });
   if (!response.ok)
-    throw new DeliveryError(
-      `LinkedIn returned HTTP ${response.status}`,
-      response.status >= 400 && response.status < 500 && ![408, 409, 425, 429].includes(response.status),
-    );
+    throw new DeliveryError(`LinkedIn returned HTTP ${response.status}`, true);
   return { id: response.headers.get('x-restli-id') || '', url: '' };
 }
 
@@ -53,11 +50,7 @@ async function publishX(env: Env, post: SocialDraft) {
     body: JSON.stringify({ text: combinedText(post) }),
     signal: timeout(),
   });
-  if (!response.ok)
-    throw new DeliveryError(
-      `X returned HTTP ${response.status}`,
-      response.status >= 400 && response.status < 500 && ![408, 409, 425, 429].includes(response.status),
-    );
+  if (!response.ok) throw new DeliveryError(`X returned HTTP ${response.status}`, true);
   const payload = (await response.json()) as { data?: { id?: string } };
   const id = payload.data?.id || '';
   return { id, url: id ? `https://x.com/Shemarhn/status/${id}` : '' };
@@ -113,15 +106,18 @@ export async function processSocialOutbox(env: Env) {
         .run();
     } catch (error) {
       const configuration = error instanceof ConfigurationError;
-      const attempts = post.attempts + (configuration ? 0 : 1);
-      const terminal = error instanceof DeliveryError && error.permanent;
+      // Once a provider request has been attempted, a timeout/network error can be an uncertain
+      // outcome: the provider may have created the post before the response was lost. Fail closed
+      // and require a human to inspect the account before retrying instead of risking duplicates.
       await env.DB.prepare(
         'UPDATE social_posts SET status=?,attempts=?,last_error=?,updated_at=? WHERE id=?',
       )
         .bind(
-          terminal || attempts >= 5 ? 'failed' : post.status,
-          attempts,
-          error instanceof Error ? error.message : 'Social publishing failed',
+          configuration ? post.status : 'failed',
+          post.attempts + (configuration ? 0 : 1),
+          configuration
+            ? (error as Error).message
+            : `${error instanceof Error ? error.message : 'Social publishing outcome uncertain'}; inspect the provider before retrying`,
           new Date().toISOString(),
           post.id,
         )
