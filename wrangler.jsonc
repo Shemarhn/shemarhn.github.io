@@ -34,6 +34,7 @@
   "env": {
     "staging": {
       "name": "shemar-marks-staging",
+      "routes": [],
       "workers_dev": true,
       "vars": {
         "APP_ENV": "staging",
