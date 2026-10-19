@@ -19,19 +19,32 @@ const schema = {
   description: d.excerpt,
   datePublished: d.date.toISOString(),
   dateModified: (d.updated || d.date).toISOString(),
-  author: { '@id': `${site.url}/#person` },
+  author: {
+    '@type': 'Person',
+    '@id': `${site.url}/#person`,
+    name: 'Shemar Marks',
+    url: `${site.url}/about/`,
+  },
   publisher: { '@id': `${site.url}/#person` },
   mainEntityOfPage: d.canonical || `${site.url}/insights/${post.id}/`,
   image: new URL(d.hero, site.url).href,
 };
-const related = (
-  await getCollection(
-    'insights',
-    ({ data }) => data.status === 'published' && data.date <= new Date(),
-  )
-)
+const allPosts = await getCollection(
+  'insights',
+  ({ data }) => data.status === 'published' && data.date <= new Date(),
+);
+const related = allPosts
   .filter((p) => p.id !== post.id)
-  .slice(0, 2);
+  .map((candidate) => {
+    let score = candidate.data.category === d.category ? 4 : 0;
+    score += candidate.data.tags.filter((tag) => d.tags.includes(tag)).length * 2;
+    score += candidate.data.relatedServices.filter((slug) => d.relatedServices.includes(slug)).length * 3;
+    score += candidate.data.relatedCases.filter((slug) => d.relatedCases.includes(slug)).length * 3;
+    return { candidate, score };
+  })
+  .sort((a, b) => b.score - a.score || b.candidate.data.date.getTime() - a.candidate.data.date.getTime())
+  .slice(0, 2)
+  .map(({ candidate }) => candidate);
 ---
 
 <Layout
