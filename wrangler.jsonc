@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shemar-marks",
   "workers_dev": true,
+  "routes": [
+    { "pattern": "shemarmarks.com", "custom_domain": true },
+    { "pattern": "www.shemarmarks.com/*", "zone_name": "shemarmarks.com" },
+  ],
   "main": "worker/entry.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
