@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shemar-marks",
-  "main": "worker/index.ts",
+  "main": "worker/entry.ts",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
@@ -13,7 +13,8 @@
   "vars": {
     "APP_ENV": "production",
     "TURNSTILE_HOSTNAMES": "shemarmarks.com,www.shemarmarks.com",
-    "EMAIL_PROVIDER": "resend",
+    "EMAIL_PROVIDER": "gmail",
+    "SOCIAL_MODE": "review",
   },
   "d1_databases": [
     {
@@ -31,7 +32,8 @@
       "vars": {
         "APP_ENV": "staging",
         "TURNSTILE_HOSTNAMES": "staging.shemarmarks.com",
-        "EMAIL_PROVIDER": "resend",
+        "EMAIL_PROVIDER": "gmail",
+        "SOCIAL_MODE": "review",
       },
       "d1_databases": [
         {
