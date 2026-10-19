@@ -25,23 +25,28 @@ Links are tagged with `utm_source=linkedin` or `utm_source=x`, `utm_medium=socia
 
 ## LinkedIn
 
-The Worker uses the LinkedIn Posts API with the authenticated member permission `w_member_social`. Configure these Worker secrets/variables:
+The Worker uses the current LinkedIn Posts API with the authenticated member permission `w_member_social`. Configure these Worker secrets/variables:
 
 - `LINKEDIN_ACCESS_TOKEN`
 - `LINKEDIN_AUTHOR_URN`
 - `LINKEDIN_VERSION` using a currently supported `YYYYMM` API version
 
-The access token is a user authorization credential and must be stored only as a Worker secret. LinkedIn access tokens can expire; a provider authentication failure is surfaced in the admin queue rather than silently dropping the post.
+The access token is a user authorization credential and must be stored only as a Worker secret. LinkedIn member access tokens are not assumed to be permanent. Authentication failures are surfaced in the admin queue rather than silently dropping a post. Reauthorization may be required periodically.
+
+LinkedIn currently requires a developer application to be associated with a LinkedIn Page even when the app ultimately posts on behalf of a member. If a Page is needed for app creation, it must stay consistent with the personal `Shemar Marks` brand and must not invent an agency/company identity.
 
 ## X
 
-The Worker uses `POST https://api.x.com/2/tweets` with an OAuth 2.0 user-context access token. Configure:
+The Worker uses `POST https://api.x.com/2/tweets` with OAuth 1.0a user context. Configure these Worker secrets:
 
-- `X_USER_ACCESS_TOKEN`
+- `X_API_KEY`
+- `X_API_SECRET`
+- `X_ACCESS_TOKEN`
+- `X_ACCESS_TOKEN_SECRET`
 
-The X application must have write permission and the authorized user token must include the current posting scopes required by X (normally `tweet.write`, with the related user/read scopes required by the authorization flow). X developer access is subject to the account's current API plan and may not be free. Keep X disabled/unconfigured rather than purchasing anything without explicit owner approval.
+The X app must have user-context write permission and the tokens must be regenerated after changing app permissions if X requires that. OAuth 1.0a is used here so the unattended Worker is not built around a short-lived OAuth 2.0 access token.
 
-OAuth 2.0 user tokens may need reauthorization/refresh depending on the X app configuration. Authentication failures remain visible in `/admin/social/`; they do not affect the website or LinkedIn queue.
+X developer access is currently consumption-billed. Keep X unconfigured rather than buying credits or enabling a paid balance without explicit owner approval. The rest of the social review system works normally when X credentials are absent.
 
 ## Duplicate and failure behavior
 
