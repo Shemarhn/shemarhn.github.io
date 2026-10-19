@@ -29,9 +29,10 @@
   "env": {
     "staging": {
       "name": "shemar-marks-staging",
+      "workers_dev": true,
       "vars": {
         "APP_ENV": "staging",
-        "TURNSTILE_HOSTNAMES": "staging.shemarmarks.com",
+        "TURNSTILE_HOSTNAMES": "staging.shemarmarks.com,shemar-marks-staging.shemarmarks.workers.dev",
         "EMAIL_PROVIDER": "gmail",
         "SOCIAL_MODE": "review",
       },
