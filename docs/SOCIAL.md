@@ -6,7 +6,7 @@ The website is the canonical source. Published Insights are exposed through the 
 
 `SOCIAL_MODE=review` is the default. A newly published article becomes one LinkedIn draft and one X draft. Nothing is posted until it is approved in `/admin/social/`. Use `SOCIAL_MODE=automatic` only after staging posts, provider credentials, and copy quality have been verified. `SOCIAL_MODE=off` disables synchronization and publishing.
 
-The admin console can edit copy, save a draft, approve it for the scheduler, publish it immediately, or skip a platform. Published rows are retained as a duplicate-post guard and are not overwritten when the article changes.
+The admin console can edit copy, save a draft, approve it for the scheduler, publish it immediately, or skip a platform. Synchronization creates missing drafts only: existing copy, approval state and article link remain the reviewed snapshot. To update an existing post after changing an article, edit its copy deliberately in the console. Published rows are retained as a duplicate-post guard.
 
 ## Article metadata
 
@@ -15,8 +15,8 @@ Each Insight may optionally include:
 ```yaml
 social:
   enabled: true
-  linkedin: "A LinkedIn-native version of the idea."
-  x: "A concise X-native hook."
+  linkedin: 'A LinkedIn-native version of the idea.'
+  x: 'A concise X-native hook.'
 ```
 
 If platform copy is omitted, the build generates a restrained fallback from the title and excerpt. Prefer hand-reviewed platform-native copy for important posts. X copy is limited to 240 characters before the article link so there is room for the URL transformation.
@@ -53,5 +53,7 @@ X developer access is currently consumption-billed. Keep X unconfigured rather t
 `social_posts` has a unique `(article_slug, platform)` key. A published row is immutable to the automatic synchronizer, so scheduled runs cannot repost the same article. Missing provider configuration leaves the draft/approval state intact and does not consume attempts.
 
 Once an actual provider publish request has been attempted, any error or lost response is treated as an **uncertain outcome** and the row becomes `failed`. The Worker does not automatically retry it because the provider may already have created the post even though the response was lost. Inspect the LinkedIn/X account first, then deliberately retry or mark the row appropriately. This fail-closed behavior favors avoiding duplicate public posts over unattended retries.
+
+Migration `0003` adds an atomic publication claim so overlapping scheduler/manual runs cannot both send the same row. A claim is saved before the provider request and cleared after a known response or caught error. If the Worker stops during the request, its failed row retains the claim and the console blocks edits/retries. Inspect the provider first; an operator may clear that row's `publish_claim` only after establishing the outcome. Never automatically expire a claim or resend an uncertain post.
 
 Provider posting is intentionally independent of article publication. A social-provider outage never blocks the website deployment or removes the canonical article.

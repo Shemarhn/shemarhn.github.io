@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import worker, { processOutbox } from '../worker/index.ts';
+import extendedWorker from '../worker/entry.ts';
+import { processSocialOutbox, syncSocialDrafts } from '../worker/social.ts';
 import { publicReference, validateModeration } from '../worker/validation.ts';
 import { emailText } from '../worker/integrations.ts';
 import { SignJWT, generateKeyPair, exportJWK } from 'jose';
@@ -10,6 +12,12 @@ import type { Env, Lead } from '../worker/types.ts';
 function database() {
   const db = new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001_initial.sql', import.meta.url), 'utf8'));
+  db.exec(
+    readFileSync(new URL('../migrations/0002_social_syndication.sql', import.meta.url), 'utf8'),
+  );
+  db.exec(
+    readFileSync(new URL('../migrations/0003_social_publish_claim.sql', import.meta.url), 'utf8'),
+  );
   return db;
 }
 function adapter(db: DatabaseSync) {
@@ -435,6 +443,143 @@ test('staging is non-indexable and trailing slash redirects preserve attribution
   assert.equal(r.headers.get('X-Content-Type-Options'), 'nosniff');
   s.db.close();
 });
+test('social synchronization preserves reviewed copy and creates each platform only once', async () => {
+  const s = setup();
+  const env = {
+    ...s.env,
+    SOCIAL_MODE: 'review',
+    ASSETS: {
+      fetch: async () =>
+        Response.json({
+          posts: [
+            {
+              slug: 'test',
+              url: 'https://example.com/test',
+              linkedin: 'Original LinkedIn',
+              x: 'Original X',
+            },
+          ],
+        }),
+    },
+  } as unknown as Env;
+  try {
+    await syncSocialDrafts(env);
+    s.db
+      .prepare(
+        "UPDATE social_posts SET content='Reviewed copy',status='approved' WHERE platform='linkedin'",
+      )
+      .run();
+    await syncSocialDrafts(env);
+    assert.equal(s.db.prepare('SELECT count(*) n FROM social_posts').get()!.n, 2);
+    assert.equal(
+      s.db.prepare("SELECT content FROM social_posts WHERE platform='linkedin'").get()!.content,
+      'Reviewed copy',
+    );
+    await processSocialOutbox(env);
+    const row = s.db.prepare("SELECT * FROM social_posts WHERE platform='linkedin'").get()!;
+    assert.equal(row.status, 'approved');
+    assert.equal(row.attempts, 0);
+    assert.match(String(row.last_error), /configuration missing/);
+  } finally {
+    s.db.close();
+  }
+});
+
+test('overlapping social publishers send once and uncertain failures require manual retry', async () => {
+  const s = setup();
+  s.db
+    .prepare(
+      "INSERT INTO social_posts(id,article_slug,platform,content,article_url,status) VALUES('test:linkedin','test','linkedin','Reviewed copy','https://example.com/test','approved')",
+    )
+    .run();
+  const env = {
+    ...s.env,
+    SOCIAL_MODE: 'review',
+    LINKEDIN_ACCESS_TOKEN: 'test',
+    LINKEDIN_AUTHOR_URN: 'urn:li:person:test',
+    LINKEDIN_VERSION: '202610',
+  };
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls++;
+    await new Promise((resolve) => setTimeout(resolve, 15));
+    throw new Error('Simulated lost provider response');
+  };
+  try {
+    await Promise.all([processSocialOutbox(env), processSocialOutbox(env)]);
+    await processSocialOutbox(env);
+    assert.equal(calls, 1);
+    let row = s.db.prepare('SELECT * FROM social_posts').get()!;
+    assert.equal(row.status, 'failed');
+    assert.equal(row.attempts, 1);
+    assert.match(String(row.last_error), /inspect the provider before retrying/);
+    s.db.prepare("UPDATE social_posts SET status='approved'").run();
+    globalThis.fetch = async () => {
+      calls++;
+      return new Response(null, { status: 201, headers: { 'x-restli-id': 'test-post' } });
+    };
+    await Promise.all([processSocialOutbox(env), processSocialOutbox(env)]);
+    await processSocialOutbox(env);
+    row = s.db.prepare('SELECT * FROM social_posts').get()!;
+    assert.equal(calls, 2);
+    assert.equal(row.status, 'published');
+    assert.equal(row.provider_post_id, 'test-post');
+  } finally {
+    globalThis.fetch = original;
+    s.db.close();
+  }
+});
+
+test('retention expires unresolved references and only CRM-delivered inquiry copies', async () => {
+  const s = setup();
+  const old = new Date(Date.now() - 366 * 86400000).toISOString();
+  for (const status of ['pending', 'rejected', 'needs_changes', 'approved']) {
+    s.db
+      .prepare(
+        'INSERT INTO testimonials(id,name,service,quote,status,created_at) VALUES(?,?,?,?,?,?)',
+      )
+      .run(status, 'Test only', 'Test', reference.quote, status, old);
+  }
+  s.db
+    .prepare('INSERT INTO testimonials(id,name,service,quote) VALUES(?,?,?,?)')
+    .run('recent', 'Test only', 'Test', reference.quote);
+  for (const status of ['pending', 'failed', 'delivered']) {
+    s.db
+      .prepare('INSERT INTO inquiries(id,payload,created_at) VALUES(?,?,?)')
+      .run(status, JSON.stringify(baseLead), old);
+    s.db
+      .prepare("INSERT INTO outbox(id,lead_id,kind,status,next_attempt) VALUES(?,?,'crm',?,?)")
+      .run(status, status, status, Math.floor(Date.now() / 1000) + 3600);
+  }
+  const env = { ...s.env, SOCIAL_MODE: 'off' };
+  try {
+    await extendedWorker.scheduled({} as ScheduledEvent, env, s.ctx);
+    await Promise.all(s.tasks);
+    assert.deepEqual(
+      s.db
+        .prepare('SELECT id FROM testimonials ORDER BY id')
+        .all()
+        .map((r) => r.id),
+      ['approved', 'recent'],
+    );
+    assert.deepEqual(
+      s.db
+        .prepare('SELECT id FROM inquiries ORDER BY id')
+        .all()
+        .map((r) => r.id),
+      ['failed', 'pending'],
+    );
+    assert.equal(
+      s.db.prepare("SELECT count(*) n FROM moderation_audit WHERE actor='system:retention'").get()!
+        .n,
+      3,
+    );
+  } finally {
+    s.db.close();
+  }
+});
+
 test('confirmation is human, replyable, and does not echo private project descriptions', () => {
   const text = emailText(baseLead as Lead);
   assert.match(text, /Hi Test,/);

@@ -51,7 +51,8 @@ async function body(request: Request) {
   if (!request.headers.get('Content-Type')?.startsWith('application/json'))
     throw new HttpError(415, 'JSON required.');
   const value = (await request.json()) as unknown;
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new HttpError(400, 'Invalid request.');
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new HttpError(400, 'Invalid request.');
   return value as Record<string, unknown>;
 }
 
@@ -125,7 +126,9 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
 
   const reference = path.match(/^\/api\/admin\/testimonials\/([a-f0-9-]{36})$/i);
   if (reference && request.method === 'DELETE') {
-    const found = await env.DB.prepare('SELECT id FROM testimonials WHERE id=?').bind(reference[1]).first();
+    const found = await env.DB.prepare('SELECT id FROM testimonials WHERE id=?')
+      .bind(reference[1])
+      .first();
     if (!found) throw new HttpError(404, 'Reference not found.');
     await env.DB.batch([
       env.DB.prepare(
@@ -137,7 +140,9 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
   }
 
   if (path === '/api/admin/social' && request.method === 'GET') {
-    const rows = await env.DB.prepare('SELECT * FROM social_posts ORDER BY created_at DESC LIMIT 200').all();
+    const rows = await env.DB.prepare(
+      'SELECT * FROM social_posts ORDER BY created_at DESC LIMIT 200',
+    ).all();
     return adminJson({ mode: env.SOCIAL_MODE || 'review', posts: rows.results });
   }
   if (path === '/api/admin/social/sync' && request.method === 'POST') {
@@ -148,7 +153,7 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
   if (publish && request.method === 'POST') {
     const id = decodeURIComponent(publish[1]);
     await env.DB.prepare(
-      "UPDATE social_posts SET status='approved',last_error=NULL,updated_at=? WHERE id=? AND status<>'published'",
+      "UPDATE social_posts SET status='approved',last_error=NULL,updated_at=? WHERE id=? AND status<>'published' AND publish_claim IS NULL",
     )
       .bind(new Date().toISOString(), id)
       .run();
@@ -161,17 +166,26 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
     const data = await body(request);
     const status = String(data.status || 'draft');
     const content = String(data.content || '').trim();
-    if (!['draft', 'approved', 'skipped'].includes(status)) throw new HttpError(400, 'Invalid social status.');
-    if (!content || content.length > 3000) throw new HttpError(400, 'Social copy is missing or too long.');
-    const row = await env.DB.prepare('SELECT platform,status FROM social_posts WHERE id=?')
+    if (!['draft', 'approved', 'skipped'].includes(status))
+      throw new HttpError(400, 'Invalid social status.');
+    if (!content || content.length > 3000)
+      throw new HttpError(400, 'Social copy is missing or too long.');
+    const row = await env.DB.prepare(
+      'SELECT platform,status,publish_claim FROM social_posts WHERE id=?',
+    )
       .bind(id)
-      .first<{ platform: string; status: string }>();
+      .first<{ platform: string; status: string; publish_claim: string | null }>();
     if (!row) throw new HttpError(404, 'Social draft not found.');
+    if (row.publish_claim)
+      throw new HttpError(
+        409,
+        'Publishing may be in progress. Inspect the provider outcome before recovering this post.',
+      );
     if (row.status === 'published') throw new HttpError(409, 'Published posts are immutable here.');
     if (row.platform === 'x' && content.length > 240)
       throw new HttpError(400, 'X copy must be 240 characters or fewer before the article link.');
     await env.DB.prepare(
-      'UPDATE social_posts SET content=?,status=?,last_error=NULL,updated_at=? WHERE id=?',
+      "UPDATE social_posts SET content=?,status=?,last_error=NULL,updated_at=? WHERE id=? AND publish_claim IS NULL AND status<>'published'",
     )
       .bind(content, status, new Date().toISOString(), id)
       .run();
@@ -195,7 +209,8 @@ export default {
       return adminJson(
         {
           ok: false,
-          error: status === 500 ? 'The admin action could not be completed.' : (error as Error).message,
+          error:
+            status === 500 ? 'The admin action could not be completed.' : (error as Error).message,
         },
         status,
       );

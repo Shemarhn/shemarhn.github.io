@@ -3,8 +3,9 @@ import { ConfigurationError, DeliveryError } from './integrations.ts';
 
 const timeout = () => AbortSignal.timeout(12000);
 const oauthEncode = (value: string) =>
-  encodeURIComponent(value).replace(/[!'()*]/g, (char) =>
-    `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+  encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
   );
 
 function combinedText(post: SocialDraft) {
@@ -36,8 +37,7 @@ async function publishLinkedIn(env: Env, post: SocialDraft) {
     }),
     signal: timeout(),
   });
-  if (!response.ok)
-    throw new DeliveryError(`LinkedIn returned HTTP ${response.status}`, true);
+  if (!response.ok) throw new DeliveryError(`LinkedIn returned HTTP ${response.status}`, true);
   return { id: response.headers.get('x-restli-id') || '', url: '' };
 }
 
@@ -124,16 +124,11 @@ export async function syncSocialDrafts(env: Env) {
       const content = article[platform]?.trim();
       if (!content) continue;
       const articleUrl =
-        platform === 'linkedin'
-          ? article.linkedinUrl || article.url
-          : article.xUrl || article.url;
+        platform === 'linkedin' ? article.linkedinUrl || article.url : article.xUrl || article.url;
       await env.DB.prepare(
         `INSERT INTO social_posts(id,article_slug,platform,content,article_url,status)
          VALUES(?,?,?,?,?,'draft')
-         ON CONFLICT(article_slug,platform) DO UPDATE SET
-           content=CASE WHEN social_posts.status IN ('draft','approved','failed') THEN excluded.content ELSE social_posts.content END,
-           article_url=CASE WHEN social_posts.status IN ('draft','approved','failed') THEN excluded.article_url ELSE social_posts.article_url END,
-           updated_at=CASE WHEN social_posts.status IN ('draft','approved','failed') THEN strftime('%Y-%m-%dT%H:%M:%fZ','now') ELSE social_posts.updated_at END`,
+         ON CONFLICT(article_slug,platform) DO NOTHING`,
       )
         .bind(`${article.slug}:${platform}`, article.slug, platform, content, articleUrl)
         .run();
@@ -145,17 +140,46 @@ export async function processSocialOutbox(env: Env) {
   if (!env.DB || env.SOCIAL_MODE === 'off') return;
   const statuses = env.SOCIAL_MODE === 'automatic' ? "('draft','approved')" : "('approved')";
   const rows = await env.DB.prepare(
-    `SELECT * FROM social_posts WHERE status IN ${statuses} ORDER BY created_at LIMIT 4`,
+    `SELECT * FROM social_posts WHERE status IN ${statuses} AND publish_claim IS NULL ORDER BY created_at LIMIT 4`,
   ).all<SocialDraft>();
   for (const post of rows.results) {
+    // Check configuration before claiming: an unconfigured provider must consume no attempt.
+    const configured =
+      post.platform === 'linkedin'
+        ? env.LINKEDIN_ACCESS_TOKEN && env.LINKEDIN_AUTHOR_URN && env.LINKEDIN_VERSION
+        : env.X_API_KEY && env.X_API_SECRET && env.X_ACCESS_TOKEN && env.X_ACCESS_TOKEN_SECRET;
+    if (!configured) {
+      await env.DB.prepare(
+        'UPDATE social_posts SET last_error=?,updated_at=? WHERE id=? AND publish_claim IS NULL AND status=?',
+      )
+        .bind(
+          `${post.platform === 'linkedin' ? 'LinkedIn' : 'X'} publishing configuration missing`,
+          new Date().toISOString(),
+          post.id,
+          post.status,
+        )
+        .run();
+      continue;
+    }
+    const claim = crypto.randomUUID();
+    const claimed = await env.DB.prepare(
+      `UPDATE social_posts SET publish_claim=?,status='failed',attempts=attempts+1,
+       last_error='Publishing in progress or outcome uncertain; inspect the provider before retrying',updated_at=?
+       WHERE id=? AND status IN ${statuses} AND publish_claim IS NULL RETURNING *`,
+    )
+      .bind(claim, new Date().toISOString(), post.id)
+      .first<SocialDraft>();
+    if (!claimed) continue;
     try {
       const result =
-        post.platform === 'linkedin' ? await publishLinkedIn(env, post) : await publishX(env, post);
+        claimed.platform === 'linkedin'
+          ? await publishLinkedIn(env, claimed)
+          : await publishX(env, claimed);
       const stamp = new Date().toISOString();
       await env.DB.prepare(
-        "UPDATE social_posts SET status='published',attempts=attempts+1,provider_post_id=?,provider_url=?,last_error=NULL,published_at=?,updated_at=? WHERE id=? AND status<>'published'",
+        "UPDATE social_posts SET status='published',provider_post_id=?,provider_url=?,last_error=NULL,published_at=?,updated_at=?,publish_claim=NULL WHERE id=? AND publish_claim=?",
       )
-        .bind(result.id, result.url, stamp, stamp, post.id)
+        .bind(result.id, result.url, stamp, stamp, post.id, claim)
         .run();
     } catch (error) {
       const configuration = error instanceof ConfigurationError;
@@ -163,7 +187,7 @@ export async function processSocialOutbox(env: Env) {
       // outcome: the provider may have created the post before the response was lost. Fail closed
       // and require a human to inspect the account before retrying instead of risking duplicates.
       await env.DB.prepare(
-        'UPDATE social_posts SET status=?,attempts=?,last_error=?,updated_at=? WHERE id=?',
+        'UPDATE social_posts SET status=?,attempts=?,last_error=?,updated_at=?,publish_claim=NULL WHERE id=? AND publish_claim=?',
       )
         .bind(
           configuration ? post.status : 'failed',
@@ -173,6 +197,7 @@ export async function processSocialOutbox(env: Env) {
             : `${error instanceof Error ? error.message : 'Social publishing outcome uncertain'}; inspect the provider before retrying`,
           new Date().toISOString(),
           post.id,
+          claim,
         )
         .run();
     }

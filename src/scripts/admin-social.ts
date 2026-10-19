@@ -34,7 +34,10 @@ async function load() {
     list.replaceChildren();
     for (const post of data.posts as Record<string, unknown>[]) {
       const card = element('article', undefined, 'admin-entry');
-      const heading = element('h2', `${String(post.platform).toUpperCase()} / ${post.article_slug}`);
+      const heading = element(
+        'h2',
+        `${String(post.platform).toUpperCase()} / ${post.article_slug}`,
+      );
       const status = element('p', String(post.status), 'admin-status');
       const link = element('a', String(post.article_url));
       link.href = String(post.article_url);
@@ -43,12 +46,15 @@ async function load() {
       const field = element('div', undefined, 'field');
       const label = element('label', 'Platform copy');
       const textarea = element('textarea');
+      textarea.id = `social-copy-${post.id}`;
+      label.htmlFor = textarea.id;
       textarea.value = String(post.content || '');
       textarea.maxLength = post.platform === 'x' ? 240 : 2800;
       textarea.rows = post.platform === 'x' ? 5 : 10;
       field.append(label, textarea);
       card.append(status, heading, link, field);
-      if (post.last_error) card.append(element('p', `Last error: ${post.last_error}`, 'form-message'));
+      if (post.last_error)
+        card.append(element('p', `Last error: ${post.last_error}`, 'form-message'));
       if (post.provider_url) {
         const published = element('a', 'Open published post ↗', 'text-link');
         published.href = String(post.provider_url);
@@ -57,7 +63,7 @@ async function load() {
         card.append(published);
       }
       const actions = element('div', undefined, 'admin-actions');
-      if (post.status !== 'published') {
+      if (post.status !== 'published' && !post.publish_claim) {
         const draft = element('button', 'Save draft', 'button secondary');
         draft.type = 'button';
         draft.addEventListener('click', async () => {
@@ -91,7 +97,8 @@ async function load() {
           try {
             await save(String(post.id), 'approved', textarea.value);
             await api(`/${encodeURIComponent(String(post.id))}/publish`, 'POST', {});
-            message.textContent = 'Publishing requested. Refresh shortly to confirm the provider result.';
+            message.textContent =
+              'Publishing requested. Refresh shortly to confirm the provider result.';
             setTimeout(() => void load(), 1800);
           } catch (error) {
             message.textContent = (error as Error).message;
@@ -115,7 +122,8 @@ async function load() {
       card.append(actions);
       list.append(card);
     }
-    if (!(data.posts as unknown[]).length) list.append(element('p', 'No social drafts yet. Sync published articles first.'));
+    if (!(data.posts as unknown[]).length)
+      list.append(element('p', 'No social drafts yet. Sync published articles first.'));
     message.textContent = 'Social queue loaded.';
   } catch (error) {
     message.textContent = (error as Error).message;
