@@ -1,3 +1,5 @@
+export {};
+
 const message = document.querySelector<HTMLElement>('[data-admin-message]')!;
 const list = document.querySelector('#admin-list')!;
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, text?: string, cls?: string) {
