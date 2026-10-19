@@ -96,8 +96,7 @@ async function purgeRetention(env: Env) {
 async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) {
   const actor = await admin(request, env);
   if (!env.DB) throw new HttpError(503, 'Database not configured.');
-  const url = new URL(request.url);
-  const path = url.pathname;
+  const path = new URL(request.url).pathname;
   if (request.method !== 'GET') sameOrigin(request);
 
   if (path === '/api/admin/inquiries' && request.method === 'GET') {
@@ -144,7 +143,9 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
   const publish = path.match(/^\/api\/admin\/social\/(.+)\/publish$/);
   if (publish && request.method === 'POST') {
     const id = decodeURIComponent(publish[1]);
-    await env.DB.prepare("UPDATE social_posts SET status='approved',last_error=NULL,updated_at=? WHERE id=? AND status<>'published'")
+    await env.DB.prepare(
+      "UPDATE social_posts SET status='approved',last_error=NULL,updated_at=? WHERE id=? AND status<>'published'",
+    )
       .bind(new Date().toISOString(), id)
       .run();
     ctx.waitUntil(processSocialOutbox(env));
@@ -158,11 +159,16 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
     const content = String(data.content || '').trim();
     if (!['draft', 'approved', 'skipped'].includes(status)) throw new HttpError(400, 'Invalid social status.');
     if (!content || content.length > 3000) throw new HttpError(400, 'Social copy is missing or too long.');
-    const row = await env.DB.prepare('SELECT platform,status FROM social_posts WHERE id=?').bind(id).first<{ platform: string; status: string }>();
+    const row = await env.DB.prepare('SELECT platform,status FROM social_posts WHERE id=?')
+      .bind(id)
+      .first<{ platform: string; status: string }>();
     if (!row) throw new HttpError(404, 'Social draft not found.');
     if (row.status === 'published') throw new HttpError(409, 'Published posts are immutable here.');
-    if (row.platform === 'x' && content.length > 240) throw new HttpError(400, 'X copy must be 240 characters or fewer before the article link.');
-    await env.DB.prepare('UPDATE social_posts SET content=?,status=?,last_error=NULL,updated_at=? WHERE id=?')
+    if (row.platform === 'x' && content.length > 240)
+      throw new HttpError(400, 'X copy must be 240 characters or fewer before the article link.');
+    await env.DB.prepare(
+      'UPDATE social_posts SET content=?,status=?,last_error=NULL,updated_at=? WHERE id=?',
+    )
       .bind(content, status, new Date().toISOString(), id)
       .run();
     return adminJson({ ok: true });
@@ -174,10 +180,11 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     try {
-      if (new URL(request.url).pathname.startsWith('/api/admin/') &&
-          /\/(?:inquiries|social)(?:\/|$)|\/testimonials\/[a-f0-9-]{36}$/i.test(new URL(request.url).pathname)) {
-        return await extendedAdmin(request, env, ctx);
-      }
+      const path = new URL(request.url).pathname;
+      const extendedPath =
+        /^\/api\/admin\/(?:inquiries|social)(?:\/|$)/.test(path) ||
+        (request.method === 'DELETE' && /^\/api\/admin\/testimonials\/[a-f0-9-]{36}$/i.test(path));
+      if (extendedPath) return await extendedAdmin(request, env, ctx);
       return await baseWorker.fetch(request, env, ctx);
     } catch (error) {
       const status = error instanceof HttpError ? error.status : 500;
