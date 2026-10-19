@@ -1,3 +1,5 @@
+export {};
+
 const message = document.querySelector<HTMLElement>('[data-social-message]')!;
 const mode = document.querySelector<HTMLElement>('[data-social-mode]')!;
 const list = document.querySelector<HTMLElement>('#social-list')!;
