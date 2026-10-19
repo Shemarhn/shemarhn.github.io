@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Data Administration" description="Private website data controls." noindex>
+  <section class="section wrap">
+    <p class="eyebrow">PRIVATE / CLOUDFLARE ACCESS</p>
+    <h1 style="font-size:clamp(2.5rem,5vw,5rem)">Data & retention.</h1>
+    <p style="margin-block:25px;max-width:760px">
+      Review website inquiry copies and reference submissions. The scheduled retention policy clears
+      old website copies after twelve months while Orbit maintains its separate business records.
+    </p>
+    <div class="admin-tab">
+      <button class="button" data-data-refresh>Refresh</button>
+      <a class="button secondary" href="/admin/">Reference moderation</a>
+      <a class="button secondary" href="/admin/social/">Social publishing</a>
+    </div>
+    <p class="form-message" role="status" data-data-message></p>
+    <h2 style="font-size:30px;margin-block:45px 20px">Website inquiries</h2>
+    <div id="inquiry-list"></div>
+    <h2 style="font-size:30px;margin-block:55px 20px">Reference submissions</h2>
+    <div id="reference-delete-list"></div>
+  </section>
+  <script>
+    import '../../scripts/admin-data';
+  </script>
+</Layout>
