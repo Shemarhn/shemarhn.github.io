@@ -1,0 +1,35 @@
+---
+// SVG-native adaptation of Bklit UI's grid fade/shimmer and pattern presets.
+// MIT license is retained in vendor/bklit-ui.LICENSE.txt.
+const { id = 'ambient', cross = false } = Astro.props;
+---
+
+<svg class="ambient-grid" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <pattern id={`${id}-pattern`} width="48" height="48" patternUnits="userSpaceOnUse">
+      {cross ? (
+        <path d="M20 24h8m-4-4v8" stroke="currentColor" stroke-opacity=".5" />
+      ) : (
+        <path d="M48 0H0V48" stroke="currentColor" stroke-opacity=".25" fill="none" />
+      )}
+    </pattern>
+    <linearGradient id={`${id}-fade`}>
+      <stop offset="0" stop-color="white" stop-opacity="0" />
+      <stop offset=".1" stop-color="white" />
+      <stop offset=".9" stop-color="white" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </linearGradient>
+    <mask id={`${id}-mask`}>
+      <rect width="1000" height="700" fill={`url(#${id}-fade)`} />
+    </mask>
+    <linearGradient id={`${id}-sweep`}>
+      <stop stop-color="#70b7ff" stop-opacity="0" />
+      <stop offset=".5" stop-color="#70b7ff" />
+      <stop offset="1" stop-color="#70b7ff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <g mask={`url(#${id}-mask)`}>
+    <rect width="1000" height="700" fill={`url(#${id}-pattern)`} />
+    <path class="grid-sweep" d="M0 350H1000" stroke={`url(#${id}-sweep)`} stroke-opacity=".7" />
+  </g>
+</svg>

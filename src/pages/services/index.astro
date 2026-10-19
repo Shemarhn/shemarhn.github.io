@@ -1,0 +1,40 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { services } from '../../data/site';
+---
+
+<Layout
+  title="Cloud, Linux, Automation & Website Services"
+  description="Focused infrastructure consulting: cloud deployment, Linux systems, Terraform, disaster recovery, automation, documentation, support, and business websites."
+>
+  <PageHero
+    label="SERVICES / INDEPENDENT ENGINEERING"
+    title="The right help."
+    accent="At the right layer."
+    description="A defined piece of work. An engineer who takes ownership. Clear deliverables that your team can keep using."
+  />
+  <section class="service-directory section wrap">
+    {services.map((s) => (
+      <a class="directory-item" href={`/services/${s.slug}/`}>
+        <Icon name={s.icon} size={30} />
+        <p class="eyebrow">{s.category}</p>
+        <h2>{s.name}</h2>
+        <p>{s.summary}</p>
+        <span class="text-link">
+          Explore the service <Icon size={15} />
+        </span>
+      </a>
+    ))}
+  </section>
+  <section class="callout wrap">
+    <div>
+      <h2>Not sure where to start?</h2>
+      <p>Describe what’s running, what’s difficult, and what needs to change.</p>
+    </div>
+    <a class="button" href="/contact/?cta=Services%20directory">
+      Discuss a project <Icon size={18} />
+    </a>
+  </section>
+</Layout>

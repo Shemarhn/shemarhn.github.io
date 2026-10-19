@@ -1,0 +1,6 @@
+---
+import { renderMonogram } from '../brand/monogram';
+const { id = 'sm', outline = false } = Astro.props;
+---
+
+<Fragment set:html={renderMonogram(id, true, outline)} />

@@ -1,0 +1,32 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects } from '../../data/site';
+---
+
+<Layout
+  title="Infrastructure Case Studies & Engineering Labs"
+  description="Inspect Shemar Marks’s Northstar AWS recovery, Cedarfield Linux hardening, and Harborlight operations automation labs. Implementation, evidence, and honest limits."
+>
+  <PageHero
+    label="SELECTED WORK / EVIDENCE INCLUDED"
+    title="Built. Tested."
+    accent="Documented."
+    description="Engineering stories with the architecture, implementation, and validation behind them. Each project below is an executed synthetic engagement, not a paid client project."
+  />
+  <section class="work-directory section wrap">
+    <div class="projects-grid">
+      {projects.map((project, index) => (
+        <ProjectCard project={project} index={index} headingLevel={2} headingLevel={2} />
+      ))}
+    </div>
+    <div class="scope-note">
+      <p>
+        Lab evidence shows how I approach a defined problem. Results are tied to the documented test
+        environment and do not imply a production SLA, client relationship, or measured outcome
+        beyond the recorded checks.
+      </p>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,18 @@
+---
+const { steps, compact = false } = Astro.props;
+---
+
+<div
+  class:list={['architecture', { compact }]}
+  role="img"
+  aria-label={`Architecture flow: ${steps.join(' → ')}`}
+>
+  <div class="arch-line" aria-hidden="true"></div>
+  {steps.map((step: string, i: number) => (
+    <div class="arch-node">
+      <span class="arch-dot" aria-hidden="true"></span>
+      <span class="mono">0{i + 1}</span>
+      <strong>{step}</strong>
+    </div>
+  ))}
+</div>

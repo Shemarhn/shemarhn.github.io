@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<Layout
+  title="Client References & Testimonials"
+  description="Client references for Shemar Marks’s independent consulting. Every submitted reference is reviewed and published only with permission."
+>
+  <PageHero
+    label="REFERENCES / TRUST IS EARNED"
+    title="In their words."
+    accent="With their permission."
+    description="References belong to the people who give them. Each published testimonial is reviewed, and identifying details are displayed only with permission."
+  />
+  <section class="section wrap">
+    <div id="approved-references" aria-live="polite"></div>
+    <div class="empty-references" id="references-empty">
+      <p class="eyebrow">A CONSIDERED APPROACH</p>
+      <h2>Good work deserves an honest record.</h2>
+      <p>
+        Approved client references will appear here. Until then, the{' '}
+        <a class="blue" href="/work/">
+          engineering case studies
+        </a>{' '}
+        offer a detailed view of how I approach implementation, verification, and handover.
+      </p>
+    </div>
+    <div class="callout" style="margin-bottom:0">
+      <div>
+        <h2>Have we worked together?</h2>
+        <p>Share a reference about the work. I’ll review it before anything appears publicly.</p>
+      </div>
+      <a class="button" href="/references/submit/">
+        Submit a reference <Icon size={17} />
+      </a>
+    </div>
+  </section>
+  <script>
+    const holder = document.querySelector('#approved-references');
+    if (!holder?.hasAttribute('data-rendered'))
+      fetch('/api/testimonials')
+        .then((r) => {
+          if (!r.ok) throw Error();
+          return r.json();
+        })
+        .then((data: { testimonials: Array<Record<string, string>> }) => {
+          if (!data.testimonials.length) return;
+          document.querySelector('#references-empty')?.setAttribute('hidden', '');
+          data.testimonials.forEach((t) => {
+            const card = document.createElement('article');
+            card.className = 'quote-card';
+            const label = document.createElement('p');
+            label.className = 'eyebrow';
+            label.textContent = t.verified === 'true' ? 'Verified client' : 'Client reference';
+            const quote = document.createElement('blockquote');
+            quote.textContent = t.quote;
+            const byline = document.createElement('p');
+            byline.textContent = [t.name, t.title, t.company].filter(Boolean).join(' · ');
+            const context = document.createElement('p');
+            context.textContent = [t.service, t.project_date, t.public_value]
+              .filter(Boolean)
+              .join(' / ');
+            card.append(label, quote, byline, context);
+            if (t.case_study) {
+              const link = document.createElement('a');
+              link.className = 'text-link';
+              link.href = `/work/${t.case_study}/`;
+              link.textContent = 'Related case study ↗';
+              card.append(link);
+            }
+            holder?.append(card);
+          });
+        })
+        .catch(() => {
+          /* Keep the truthful static fallback on an offline preview. */
+        });
+  </script>
+</Layout>

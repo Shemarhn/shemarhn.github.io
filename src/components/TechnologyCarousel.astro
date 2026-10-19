@@ -1,0 +1,159 @@
+---
+import { technologies, technologyCategories } from '../data/technologies';
+import Icon from './Icon.astro';
+import AmbientGrid from './AmbientGrid.astro';
+---
+
+<section
+  class="stack-section section"
+  id="ecosystem"
+  data-stack-carousel
+  aria-labelledby="stack-title"
+>
+  <div class="wrap">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">04 / THE STACK, IN PERSPECTIVE</p>
+        <h2 id="stack-title">
+          Different platforms.
+          <br />
+          <span class="muted">Connected thinking.</span>
+        </h2>
+      </div>
+      <p>
+        Cloud, systems, delivery, data, and the applications around them. Explore the tools. See
+        where they connect.
+      </p>
+    </div>
+    <div class="stack-toolbar" tabindex="0" role="region" aria-label="Technology categories">
+      <div class="stack-filters" role="group" aria-label="Filter technologies">
+        {technologyCategories.map((category) => (
+          <button
+            type="button"
+            data-stack-filter={category}
+            aria-pressed={category === 'All' ? 'true' : 'false'}
+            disabled
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+      <span class="mono stack-total">
+        {technologies.length} TECHNOLOGIES / ONE SYSTEMS PERSPECTIVE
+      </span>
+    </div>
+  </div>
+  <div
+    class="stack-viewport"
+    data-stack-viewport
+    role="region"
+    aria-roledescription="carousel"
+    aria-label="Technology stack explorer"
+    tabindex="0"
+    aria-describedby="stack-help"
+  >
+    <AmbientGrid id="stack-grid" cross />
+    <div class="stack-floor" aria-hidden="true"></div>
+    <span class="stack-scene-label mono" aria-hidden="true">
+      THE TOOLS CHANGE. THE PRINCIPLES HOLD.
+    </span>
+    <div class="stack-ring" data-stack-ring>
+      {technologies.map((tech, index) => (
+        <button
+          class="stack-card"
+          data-stack-card={tech.id}
+          data-category={tech.category}
+          data-name={tech.name}
+          data-description={tech.description}
+          data-service={tech.service}
+          type="button"
+          aria-label={`Explore ${tech.name}`}
+        >
+          <span class="stack-card-index mono">
+            {String(index + 1).padStart(2, '0')} / {tech.category}
+          </span>
+          <span class="stack-logo-plate">
+            <img
+              src={`/assets/technologies/${tech.id}.svg`}
+              width="100"
+              height="100"
+              alt=""
+              loading="lazy"
+              draggable="false"
+            />
+          </span>
+          <strong>{tech.name}</strong>
+          <span class="stack-card-footer mono">
+            EXPLORE THE CONNECTION <Icon size={13} />
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="stack-controls" data-stack-controls>
+      <p class="mono" id="stack-help">
+        DRAG TO EXPLORE <span aria-hidden="true">/</span> OR USE THE ARROWS
+      </p>
+      <div class="stack-navigation">
+        <button type="button" data-stack-prev aria-label="Previous technology">
+          ←
+        </button>
+        <span class="mono" data-stack-count aria-live="off">
+          01 <span class="muted">/ {technologies.length}</span>
+        </span>
+        <button type="button" data-stack-next aria-label="Next technology">
+          →
+        </button>
+      </div>
+      <div class="stack-actions">
+        <button type="button" data-stack-pause aria-pressed="false">
+          Pause rotation
+        </button>
+        <button
+          type="button"
+          data-stack-index-toggle
+          aria-expanded="false"
+          aria-controls="stack-index"
+        >
+          View all <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </div>
+    <div class="stack-detail" aria-live="polite" aria-atomic="true">
+      <div class="stack-detail-heading">
+        <span class="eyebrow" data-stack-category>
+          Cloud
+        </span>
+        <h3 data-stack-name>
+          AWS<span class="blue">.</span>
+        </h3>
+      </div>
+      <p data-stack-description>{technologies[0].description}</p>
+      <a href="/services/cloud-infrastructure/" class="text-link" data-stack-link>
+        Explore related service <Icon size={16} />
+      </a>
+    </div>
+    <div
+      class="stack-index"
+      id="stack-index"
+      hidden
+      role="group"
+      aria-label="All technology choices"
+    >
+      {technologies.map((tech) => (
+        <button type="button" data-stack-pick={tech.id}>
+          <img
+            src={`/assets/technologies/${tech.id}.svg`}
+            alt=""
+            width="28"
+            height="28"
+            loading="lazy"
+          />
+          {tech.name}
+        </button>
+      ))}
+    </div>
+    <p class="stack-footnote mono">SELECTED FOR THE WORKLOAD. IMPLEMENTED TO A CLEAR SCOPE.</p>
+  </div>
+</section>

@@ -1,0 +1,78 @@
+[
+  {
+    "path": "/",
+    "status": 200
+  },
+  {
+    "path": "/services/",
+    "status": 200
+  },
+  {
+    "path": "/services/websites/",
+    "status": 200
+  },
+  {
+    "path": "/work/northstar/",
+    "status": 200
+  },
+  {
+    "path": "/about/",
+    "status": 200
+  },
+  {
+    "path": "/pricing/",
+    "status": 200
+  },
+  {
+    "path": "/references/",
+    "status": 200
+  },
+  {
+    "path": "/references/submit/",
+    "status": 200
+  },
+  {
+    "path": "/insights/",
+    "status": 200
+  },
+  {
+    "path": "/contact/",
+    "status": 200
+  },
+  {
+    "path": "/rss.xml",
+    "status": 200
+  },
+  {
+    "path": "/sitemap.xml",
+    "status": 200
+  },
+  {
+    "path": "/this-does-not-exist/",
+    "status": 404
+  },
+  {
+    "path": "/services?utm_source=smoke",
+    "status": 301
+  },
+  {
+    "path": "/admin/",
+    "status": 503
+  },
+  {
+    "path": "/api/admin/testimonials",
+    "status": 503
+  },
+  {
+    "path": "/api/testimonials",
+    "status": 200
+  },
+  {
+    "check": "durable form acceptance and idempotent replay",
+    "status": "passed"
+  },
+  {
+    "check": "public reference remains private",
+    "status": "passed"
+  }
+]

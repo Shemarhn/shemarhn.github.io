@@ -1,22 +1,63 @@
-# Shemar Marks — Infrastructure & Recovery
+# Shemar Marks
 
-**[Visit the portfolio](https://shemarhn.github.io/)** · [GitHub profile](https://github.com/Shemarhn) · [LinkedIn](https://www.linkedin.com/in/shemar-marks-11ba4820b/)
+A static-first Astro 7 website with a separate Cloudflare Worker for inquiries, references, analytics, authentication, and durable delivery. Prepared for `shemarmarks.com`; not deployed or connected to live accounts by this build.
 
-A responsive portfolio for freelance infrastructure services, with Northstar migration/recovery and Cedarfield Linux-hardening evidence. Built with plain HTML, CSS and JavaScript and published through GitHub Pages.
+## Start here
 
-## Editing and publishing
+1. Read [the launch checklist](docs/LAUNCH.md).
+2. Read [the architecture](docs/ARCHITECTURE.md) and [verification report](docs/VERIFICATION.md).
+3. Use Node.js 24 and pnpm 11. The lockfile records tested dependency versions.
 
-- Edit `index.html` for wording and page content, `styles.css` for layout and `site.js` for evidence-tab and contact interactions.
-- Public images, diagrams and the downloadable presentation are in `assets/`.
-- Push changes to `main`. GitHub Pages publishes from the repository root; `.nojekyll` keeps the files as a plain static site.
-- Deployment progress is visible in this repository's **Actions** tab and **Settings → Pages**.
-- Preview locally with any static web server before publishing.
+```sh
+pnpm install --frozen-lockfile
+cp .env.example .env
+cp .dev.vars.example .dev.vars
+pnpm db:local
+pnpm build
+pnpm preview
+```
 
-No build step, paid hosting plan, visitor account, analytics service, database or form backend is required. Enquiries use the public business email, `shemarmarks.tech@gmail.com`.
+Open `http://127.0.0.1:4321`. Windows users can use `Copy-Item` instead of `cp`. `pnpm dev` starts the faster Astro-only visual preview; API, authentication, and D1 behavior require `pnpm preview`.
 
-## Evidence and attribution
+Local form testing works only on a loopback hostname with `APP_ENV=development` and `LOCAL_FORM_TESTING=true`. There is **no local administrator authentication bypass**. The admin route fails closed until Cloudflare Access is configured.
 
-Northstar is a completed synthetic portfolio lab. The 12-minute recovery is an operator measurement from one exercise, not a production SLA. The case study includes original recovered-app and monitoring-email evidence, the implementation diagram, and the presentation preserved in [northstar-aws-recovery](https://github.com/Shemarhn/northstar-aws-recovery).
+Astro telemetry may be disabled with `ASTRO_TELEMETRY_DISABLED=1`. Wrangler metrics may be disabled with `WRANGLER_SEND_METRICS=false`.
 
-The professional portrait was supplied and approved for public use by Shemar Marks. Software-project descriptions reflect the public repositories. No client testimonials, certifications, measured RPO, uptime guarantees or cost savings are implied.
-Cedarfield is an executed local Ubuntu/WSL2 hardening lab with real control verification, rollback and maintenance documentation. Both case studies include downloadable editable presentations. The site leads with four scoped services and ongoing infrastructure care, then concise proof. Responsive WebP assets reduce image transfer while original evidence PNGs remain available.
+## Checks
+
+```sh
+pnpm test
+pnpm build
+pnpm test:site
+node scripts/http-smoke.mjs
+```
+
+The HTTP smoke test needs the local Worker and writes synthetic records only to its local database. Never point it at production. `TEST_BASE_URL` changes its target for a separate local instance.
+
+`pnpm build:qa` produces an explicitly instrumented local build with axe and rendering metrics. Inspect `document.documentElement.dataset.smAudit`, `smFcp`, `smLcp`, and `smCls` in the built-in browser. **Run `pnpm build` again before deployment** to remove the QA library. Production CI always uses the normal build.
+
+## Content and customization
+
+- Brand and shared content: `src/data/site.ts`.
+- Page and component source: `src/pages/`, `src/components/`, `src/layouts/`.
+- Visual system and responsive behavior: `src/styles/global.css` and `src/styles/experience.css`.
+- Editable SM geometry: `src/brand/monogram.ts`; regenerate exports with `node scripts/export-brand.mjs`.
+- Technology carousel content and actual logos: `src/data/technologies.ts`, `public/assets/technologies/`.
+- Insights: Markdown in `src/content/insights/`; see [publishing](docs/PUBLISHING.md).
+- Prices: `pricing` data in `src/data/site.ts`. No unapproved numerical prices are published.
+- Original supplied brand references: `brand/`. Optimized site images: `public/assets/`.
+- CRM and email adapters: `worker/integrations.ts`; contracts and setup are documented below.
+
+## Documentation
+
+- [Cloudflare deployment and credentials](docs/LAUNCH.md)
+- [Architecture, security, and operations](docs/ARCHITECTURE.md)
+- [CRM contract](docs/CRM.md)
+- [Acknowledgment email setup](docs/EMAIL.md)
+- [Weekly publishing](docs/PUBLISHING.md)
+- [SEO research, topic map, and content plan](docs/SEO.md)
+- [Content and brand audit](docs/AUDIT.md)
+- [Vector identity, motion, technology explorer, and licenses](docs/DESIGN-SYSTEM.md)
+- [Test results and verification limits](docs/VERIFICATION.md)
+
+Development is on `site-experience-v2` in [Shemarhn/shemarhn.github.io](https://github.com/Shemarhn/shemarhn.github.io). The existing default-branch history and live GitHub Pages files are preserved. The Astro application builds from `src/` into `dist/`; legacy root HTML is not part of that build. Production remains gated until the account resources in the launch checklist are configured.
