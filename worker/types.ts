@@ -21,10 +21,7 @@ export interface Env {
   LINKEDIN_ACCESS_TOKEN?: string;
   LINKEDIN_AUTHOR_URN?: string;
   LINKEDIN_VERSION?: string;
-  X_API_KEY?: string;
-  X_API_SECRET?: string;
-  X_ACCESS_TOKEN?: string;
-  X_ACCESS_TOKEN_SECRET?: string;
+  X_USER_ACCESS_TOKEN?: string;
 }
 export type Lead = {
   name: string;
