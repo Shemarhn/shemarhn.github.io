@@ -115,6 +115,7 @@ export function publicReference(row: Record<string, unknown>) {
     name: row.identity_consent ? row.name : 'Client reference',
     company: row.identity_consent ? row.company : '',
     title: row.identity_consent ? row.title : '',
+    website: row.identity_consent ? row.website || '' : '',
     quote: row.quote,
     service: row.service,
     project_date: row.project_date,
