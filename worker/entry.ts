@@ -82,7 +82,11 @@ async function purgeRetention(env: Env) {
       env.DB.prepare('DELETE FROM testimonials WHERE id=?').bind(row.id),
     ]);
   }
-  const staleInquiries = await env.DB.prepare('SELECT id FROM inquiries WHERE created_at<? LIMIT 500')
+  // The website copy is safe to expire only after Orbit has durably accepted it. If CRM delivery
+  // is still pending/failed, D1 may be the only durable copy and must remain for operator recovery.
+  const staleInquiries = await env.DB.prepare(
+    "SELECT i.id FROM inquiries i JOIN outbox o ON o.lead_id=i.id AND o.kind='crm' WHERE i.created_at<? AND o.status='delivered' LIMIT 500",
+  )
     .bind(cutoff)
     .all<{ id: string }>();
   for (const row of staleInquiries.results) {
