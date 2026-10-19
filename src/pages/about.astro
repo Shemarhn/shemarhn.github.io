@@ -2,11 +2,20 @@
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+const schema = {
+  '@type': 'ProfilePage',
+  '@id': `${site.url}/about/#profile`,
+  name: 'About Shemar Marks',
+  url: `${site.url}/about/`,
+  mainEntity: { '@id': `${site.url}/#person` },
+};
 ---
 
 <Layout
   title="About Shemar Marks — Independent Infrastructure Consultant"
   description="Meet Shemar Marks, an independent consultant in Jamaica working remotely across cloud infrastructure, Linux, automation, and technical documentation."
+  schema={schema}
 >
   <PageHero
     label="ABOUT / THE PERSON BEHIND THE SYSTEMS"
