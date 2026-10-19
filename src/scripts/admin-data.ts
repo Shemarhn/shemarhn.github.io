@@ -1,3 +1,5 @@
+export {};
+
 const message = document.querySelector<HTMLElement>('[data-data-message]')!;
 const inquiries = document.querySelector<HTMLElement>('#inquiry-list')!;
 const references = document.querySelector<HTMLElement>('#reference-delete-list')!;
