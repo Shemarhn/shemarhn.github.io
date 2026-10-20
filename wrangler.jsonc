@@ -3,7 +3,7 @@
   "name": "shemar-marks",
   "workers_dev": true,
   "routes": [
-    { "pattern": "shemarmarks.com", "custom_domain": true },
+    { "pattern": "shemarmarks.com/*", "zone_name": "shemarmarks.com" },
     { "pattern": "www.shemarmarks.com/*", "zone_name": "shemarmarks.com" },
   ],
   "main": "worker/entry.ts",
