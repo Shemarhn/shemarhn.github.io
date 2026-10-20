@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro';
+import Architecture from './Architecture.astro';
+const { project, index = 0, headingLevel = 3 } = Astro.props;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+const proof =
+  project.slug === 'northstar'
+    ? ['12 min', 'One observed lab recovery; not a production SLA']
+    : project.slug === 'cedarfield'
+      ? ['2 → 1', 'Open tested ports in the isolated lab']
+      : ['15 + 19', 'Live scenarios + automated boundary tests'];
+---
+
+<a
+  class:list={['project-card', `project-${project.slug}`]}
+  href={`/work/${project.slug}/`}
+  data-track="case_study_click"
+>
+  <div class="project-art">
+    <span class="project-code mono">SM / LAB 0{index + 1}</span>
+    <Architecture steps={project.architecture.slice(1)} compact />
+    <span class="project-art-name" aria-hidden="true">
+      {project.name}
+    </span>
+    <span class="project-art-note mono">{project.tags.join(' / ')}</span>
+    <div class="project-art-arrow">
+      <Icon size={23} />
+    </div>
+  </div>
+  <div class="project-meta">
+    <div>
+      <p class="eyebrow">{project.type}</p>
+      <Heading>
+        {project.name.toLowerCase()}
+        <span class="blue">.</span>
+      </Heading>
+    </div>
+    <span class="project-number mono">0{index + 1}</span>
+  </div>
+  <p class="project-story-title">{project.title}</p>
+  <p class="project-summary">{project.summary}</p>
+  <div class="project-verification">
+    <strong>{proof[0]}</strong>
+    <span>{proof[1]}</span>
+  </div>
+</a>

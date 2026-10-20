@@ -1,0 +1,28 @@
+---
+import Icon from './Icon.astro';
+const { label, title, accent, description, cta, service } = Astro.props;
+---
+
+<section class="page-hero wrap">
+  <p class="eyebrow">
+    <span class="tiny-line"></span>
+    {label}
+  </p>
+  <h1>
+    {title}
+    <br />
+    {accent && <span class="muted">{accent}</span>}
+  </h1>
+  <div class="page-hero-bottom">
+    <p>{description}</p>
+    {cta && (
+      <a
+        class="button"
+        href={`/contact/?service=${encodeURIComponent(service || '')}&cta=${encodeURIComponent(label)}`}
+      >
+        {cta}
+        <Icon size={18} />
+      </a>
+    )}
+  </div>
+</section>

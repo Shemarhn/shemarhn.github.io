@@ -1,0 +1,29 @@
+APP_ENV=development
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+TURNSTILE_HOSTNAMES=localhost,127.0.0.1
+# Local-only spam bypass; worker refuses this outside loopback + development
+LOCAL_FORM_TESTING=true
+CRM_API_URL=https://orbit.example.com/api/v1/website-inquiries
+CRM_API_TOKEN=
+CRM_CREATE_OPPORTUNITY=false
+EMAIL_PROVIDER=gmail
+GMAIL_CLIENT_ID=
+GMAIL_CLIENT_SECRET=
+GMAIL_REFRESH_TOKEN=
+# Optional alternative transactional email provider
+RESEND_API_KEY=
+ACCESS_TEAM_DOMAIN=
+ACCESS_AUD=
+ADMIN_EMAILS=shemar@shemarmarks.com
+IP_HASH_SALT=replace-with-a-long-random-secret
+# off | review | automatic. Keep review until provider credentials and staging posts are verified.
+SOCIAL_MODE=review
+LINKEDIN_ACCESS_TOKEN=
+LINKEDIN_AUTHOR_URN=
+LINKEDIN_VERSION=
+# X OAuth 1.0a user-context credentials. The app must have write permission.
+# X developer access is consumption-billed; do not purchase credits without owner approval.
+X_API_KEY=
+X_API_SECRET=
+X_ACCESS_TOKEN=
+X_ACCESS_TOKEN_SECRET=

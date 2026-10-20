@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<Layout
+  title="Privacy Notice"
+  description="How Shemar Marks handles project inquiries, reference submissions, permissions, and privacy-respectful website measurement."
+>
+  <PageHero
+    label="PRIVACY / UPDATED 19 OCTOBER 2026"
+    title="Your details."
+    accent="Handled with care."
+    description="This notice explains how information submitted through this website is used. For questions or requests, contact hello@shemarmarks.com."
+  />
+  <section class="section wrap prose">
+    <h2>Who handles your information.</h2>
+    <p>
+      Shemar Marks is an independent consultant based in Jamaica. Contact{' '}
+      <a href="mailto:hello@shemarmarks.com">hello@shemarmarks.com</a> about access, correction,
+      deletion, or withdrawing a reference.
+    </p>
+    <h2>Inquiries.</h2>
+    <p>
+      The inquiry form collects your name, email, project details, selected service, timeline, and
+      any optional company, website, or budget information you provide. It also records the
+      submitting page, CTA, landing page, referrer, campaign parameters, and submission time. This
+      information is used to respond, scope work, and understand which pages generate useful
+      inquiries.
+    </p>
+    <p>
+      Submissions are stored at the edge before an attempt to synchronize them to a private CRM or
+      send an acknowledgment. Cloudflare provides hosting, spam protection, and storage. Resend may
+      deliver acknowledgment emails when configured. These providers may process information outside
+      your country.
+    </p>
+    <h2>References.</h2>
+    <p>
+      Reference submissions are private until reviewed and approved. Your email is never part of the
+      public reference. Your name, title, and company are displayed only with identity permission. A
+      project value requires permission or an authorized owner entry, plus separate publication
+      approval. You can request correction or removal by email.
+    </p>
+    <h2>Security and retention.</h2>
+    <p>
+      Please do not submit passwords, tokens, or sensitive business records. Access to submissions
+      is restricted. Spam-prevention counters use a short-lived salted hash of the network address
+      rather than retaining the raw address in the application database. Unconverted inquiries and
+      pending references should be reviewed for deletion within 12 months; active engagement records
+      may need to be retained for operational or contractual reasons.
+    </p>
+    <h2>Website measurement.</h2>
+    <p>
+      Cloudflare Web Analytics can provide aggregate page measurement when enabled. First-party
+      event counts record page views and interactions without persistent visitor identifiers. Form
+      attribution uses session storage within the current tab. Do Not Track and Global Privacy
+      Control disable first-party interaction measurement.
+    </p>
+    <div class="privacy-controls">
+      <label class="checkbox">
+        <input id="analytics-optout" type="checkbox" />
+        Disable first-party interaction measurement on this device.
+      </label>
+      <p class="small">
+        This stores a local preference. Essential spam protection and submitted inquiry metadata
+        still apply.
+      </p>
+    </div>
+    <h2>External links.</h2>
+    <p>
+      Links to GitHub, LinkedIn, X, and other third parties are governed by those services’ own
+      notices. Clicking an email link opens your chosen email application.
+    </p>
+  </section>
+  <script>
+    const checkbox = document.querySelector<HTMLInputElement>('#analytics-optout');
+    if (checkbox) {
+      try {
+        checkbox.checked = localStorage.getItem('sm-analytics') === 'off';
+      } catch {}
+      checkbox.addEventListener('change', () => {
+        try {
+          localStorage.setItem('sm-analytics', checkbox.checked ? 'off' : 'on');
+        } catch {}
+      });
+    }
+  </script>
+</Layout>

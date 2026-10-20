@@ -1,0 +1,31 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Social Publishing Administration"
+  description="Private review queue for Shemar Marks article syndication."
+  noindex
+>
+  <section class="section wrap">
+    <p class="eyebrow">PRIVATE / CLOUDFLARE ACCESS</p>
+    <h1 style="font-size:clamp(2.5rem,5vw,5rem)">Social publishing.</h1>
+    <p style="margin-block:25px;max-width:760px">
+      Published Insights become LinkedIn and X drafts here. Review mode is the safe default: nothing
+      posts until you approve it. Automatic mode can be enabled later after the provider credentials
+      and copy quality are proven in staging.
+    </p>
+    <div class="admin-tab">
+      <button class="button" data-social-sync>Sync published articles</button>
+      <button class="button secondary" data-social-refresh>Refresh queue</button>
+      <a class="button secondary" href="/admin/">Reference moderation</a>
+      <a class="button secondary" href="/admin/data/">Data & retention</a>
+    </div>
+    <p class="form-message" role="status" data-social-message></p>
+    <p class="small muted" data-social-mode></p>
+    <div id="social-list" style="margin-top:30px"></div>
+  </section>
+  <script>
+    import '../../scripts/admin-social';
+  </script>
+</Layout>

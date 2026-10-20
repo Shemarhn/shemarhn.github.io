@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+const schema = {
+  '@type': 'ProfilePage',
+  '@id': `${site.url}/about/#profile`,
+  name: 'About Shemar Marks',
+  url: `${site.url}/about/`,
+  mainEntity: { '@id': `${site.url}/#person` },
+};
+---
+
+<Layout
+  title="About Shemar Marks — Independent Infrastructure Consultant"
+  description="Meet Shemar Marks, an independent consultant in Jamaica working remotely across cloud infrastructure, Linux, automation, and technical documentation."
+  schema={schema}
+>
+  <PageHero
+    label="ABOUT / THE PERSON BEHIND THE SYSTEMS"
+    title="An independent mind."
+    accent="An accountable engineer."
+    description="I’m Shemar Marks. I work at the point where applications meet the systems that keep them running."
+  />
+  <section class="profile-layout section wrap">
+    <figure class="portrait-frame">
+      <img
+        src="/assets/shemar-marks.webp"
+        width="420"
+        height="525"
+        alt="Shemar Marks, independent cloud infrastructure and Linux consultant"
+      />
+      <figcaption>
+        <span>SHEMAR MARKS</span>
+        <span>JAMAICA / REMOTE</span>
+      </figcaption>
+    </figure>
+    <div class="prose">
+      <h2>Ownership is part of the work.</h2>
+      <p>
+        I help small teams deploy, understand, and operate their infrastructure. My work brings
+        together cloud platforms, Linux, virtualization, and automation—with the documentation and
+        verification that make a handover useful.
+      </p>
+      <p>
+        Azure was my first cloud platform. My work also includes AWS, Proxmox, Docker, Terraform,
+        networking, and systems administration. I approach each platform through the workload’s
+        requirements rather than treating the tool as the starting point.
+      </p>
+      <p>
+        I hold a BSc in Computer Science and the AWS Certified Cloud Practitioner certification. My{' '}
+        <a href="/work/">case studies</a> make the distinction between executed lab work and client
+        engagements explicit.
+      </p>
+      <p>
+        My freelance work includes a paid enterprise documentation review. Client-specific details
+        and commercial terms are kept private unless there is permission to share them.
+      </p>
+      <h2>Working together.</h2>
+      <p>
+        I’m based in Jamaica and available for remote engagements with businesses, startups,
+        agencies, and MSPs in the United States, Canada, and internationally. Engagements begin with
+        the system, the constraints, and the outcome you need.
+      </p>
+      <p>
+        You work directly with me. I’ll make the scope clear, tell you what I can verify, and leave
+        you with configuration and documentation you can use.
+      </p>
+      <div class="credentials">
+        <div>
+          <strong>BSc Computer Science</strong>
+          <span>Academic foundation</span>
+        </div>
+        <div>
+          <strong>AWS Cloud Practitioner</strong>
+          <span>Certification</span>
+        </div>
+        <div>
+          <strong>Infrastructure & operations</strong>
+          <span>Cloud · Linux · Virtualization</span>
+        </div>
+        <div>
+          <strong>Direct collaboration</strong>
+          <span>Independent · Remote · Accountable</span>
+        </div>
+      </div>
+      <div class="share-links">
+        <a href="https://github.com/Shemarhn" target="_blank" rel="noopener noreferrer">
+          GitHub ↗
+        </a>
+        <a
+          href="https://www.linkedin.com/in/shemar-marks-11ba4820b"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          LinkedIn ↗
+        </a>
+        <a href="https://x.com/Shemarhn" target="_blank" rel="noopener noreferrer">
+          X ↗
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="callout wrap">
+    <div>
+      <h2>Let’s make the next step clear.</h2>
+      <p>A short description of the problem is a good place to start.</p>
+    </div>
+    <a class="button" href="/contact/?cta=About%20page">
+      Discuss a project <Icon size={18} />
+    </a>
+  </section>
+</Layout>

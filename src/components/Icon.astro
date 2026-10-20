@@ -1,0 +1,32 @@
+---
+const { name = 'arrow', size = 24 } = Astro.props;
+const paths: Record<string, string> = {
+  arrow: 'M5 19 19 5M5 5h14v14',
+  cloud: 'M6 18a4 4 0 0 1-.7-7.94A7 7 0 0 1 19 9a4.5 4.5 0 0 1-.5 9H6Z',
+  terminal:
+    'm6 8 4 4-4 4m7 0h5M4 3h16a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z',
+  code: 'm8 5-6 7 6 7m8-14 6 7-6 7m-3-16-2 18',
+  recover: 'M3 10a9 9 0 1 1 1 8M3 3v7h7m2-3v5l3 2',
+  nodes: 'M7 6h10M7 18h10M5 8v8m14-8v8M3 3h4v4H3zm14 0h4v4h-4zM3 17h4v4H3zm14 0h4v4h-4z',
+  document: 'M14 2H5v20h14V7l-5-5v5h5M8 11h8m-8 4h8m-8 4h5',
+  pulse: 'M2 12h5l3-9 4 18 3-9h5',
+  window: 'M3 3h18v18H3zM3 8h18M6 5.5h.1m3 0h.1',
+  plus: 'M12 4v16M4 12h16',
+  down: 'M12 3v18m-7-7 7 7 7-7',
+  check: 'm4 12 5 5L20 6',
+};
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d={paths[name] || paths.arrow} />
+</svg>

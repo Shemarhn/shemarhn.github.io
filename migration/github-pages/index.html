@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Shemar Marks has moved</title>
+    <meta name="robots" content="noindex,follow" />
+    <link rel="canonical" href="https://shemarmarks.com/" />
+  </head>
+  <body>
+    <h1>Shemar Marks has moved.</h1>
+    <p>
+      Visit <a id="destination" href="https://shemarmarks.com/">shemarmarks.com</a> for cloud
+      infrastructure, Linux, and automation consulting.
+    </p>
+    <p>
+      <a href="https://shemarmarks.com/services/">Services</a> ·
+      <a href="https://shemarmarks.com/work/">Case studies</a> ·
+      <a href="https://shemarmarks.com/contact/">Contact</a>
+    </p>
+    <script>
+      const paths = {
+        services: '/services/',
+        work: '/work/',
+        northstar: '/work/northstar/',
+        cedarfield: '/work/cedarfield/',
+        harborlight: '/work/harborlight/',
+        care: '/services/maintenance/',
+        about: '/about/',
+        contact: '/contact/',
+      };
+      const key = location.hash.slice(1);
+      const target = 'https://shemarmarks.com' + (paths[key] || '/') + location.search;
+      document.getElementById('destination').href = target;
+      location.replace(target);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { services, projects, site } from '../../data/site';
+export function getStaticPaths() {
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
+}
+const { service: s } = Astro.props;
+const project = projects.find((p) => p.slug === s.related)!;
+const schema = {
+  '@type': 'Service',
+  name: s.name,
+  description: s.summary,
+  url: `${site.url}/services/${s.slug}/`,
+  provider: { '@id': `${site.url}/#person` },
+  serviceType: s.name,
+};
+---
+
+<Layout title={`${s.name} Consulting`} description={s.summary} schema={schema}>
+  <PageHero
+    label={`SERVICES / ${s.name}`}
+    title={s.short}
+    description={s.intro}
+    cta="Discuss this service"
+    service={s.name}
+  />
+  <section class="content-grid section wrap">
+    <aside>
+      <p class="eyebrow">IN THIS ENGAGEMENT</p>
+      <a href="#fit">When it helps</a>
+      <a href="#deliverables">What you receive</a>
+      <a href="#approach">How I work</a>
+      <a href="#scope">Scope & boundaries</a>
+      <a href={`/work/${project.slug}/`}>Related lab: {project.name} ↗</a>
+    </aside>
+    <div class="prose">
+      <h2 id="fit">When this is useful.</h2>
+      <p>{s.fit}</p>
+      <ul>
+        {s.problems.map((p) => (
+          <li>{p}</li>
+        ))}
+      </ul>
+      <h2 id="deliverables">What you receive.</h2>
+      <ul class="deliverables">
+        {s.deliverables.map((d) => (
+          <li>
+            <Icon name="check" size={17} />
+            {d}
+          </li>
+        ))}
+      </ul>
+      <h2 id="approach">A clear way through.</h2>
+      <ol>
+        {s.approach.map((a) => (
+          <li>{a}</li>
+        ))}
+      </ol>
+      <h2 id="scope">Scope before implementation.</h2>
+      <p>{s.scope}</p>
+      <div class="scope-note">
+        <p>
+          Every engagement begins with deliverables, access requirements, acceptance checks, and
+          responsibilities agreed in writing. Work outside that scope is discussed before it becomes
+          a change.
+        </p>
+      </div>
+      <h2>Engineering you can inspect.</h2>
+      <p>
+        {project.summary} The <a href={`/work/${project.slug}/`}>{project.name} case study</a>{' '}
+        documents the implementation, checks, and limits of an executed synthetic lab.
+      </p>
+      <details class="faq">
+        <summary>{s.faq[0]}</summary>
+        <p>{s.faq[1]}</p>
+      </details>
+      <h2>Connected services.</h2>
+      <p>
+        {services
+          .filter((x) => x.slug !== s.slug && [s.category, 'Operate'].includes(x.category))
+          .slice(0, 3)
+          .map((x, i) => (
+            <>
+              <a href={`/services/${x.slug}/`}>{x.name}</a>
+              {i < 2 ? ' · ' : ''}
+            </>
+          ))}
+      </p>
+    </div>
+  </section>
+  <section class="callout wrap">
+    <div>
+      <h2>Let’s define the right scope.</h2>
+      <p>Tell me about the system and the outcome you need.</p>
+    </div>
+    <a
+      class="button"
+      href={`/contact/?service=${encodeURIComponent(s.name)}&cta=Service%20page&source=Website`}
+    >
+      Discuss a project <Icon size={18} />
+    </a>
+  </section>
+</Layout>

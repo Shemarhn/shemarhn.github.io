@@ -1,0 +1,146 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+const key = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+---
+
+<Layout
+  title="Submit a Client Reference"
+  description="Share a reference about your work with Shemar Marks. Submissions are reviewed before publication, with separate permissions for identity and project value."
+  noindex
+>
+  <PageHero
+    label="REFERENCES / SUBMIT FOR REVIEW"
+    title="Your experience."
+    accent="Your permission."
+    description="Tell me about the work we did together. Your reference will enter a review queue and will never publish automatically."
+  />
+  <section class="form-layout section wrap">
+    <aside class="form-aside">
+      <h2>Before you share.</h2>
+      <p>
+        Your email stays private and helps me verify the reference. Please include only details you
+        have permission to share.
+      </p>
+      <p>
+        Name and company display, and any commercial information, have separate permissions. Leaving
+        either unchecked keeps those details private.
+      </p>
+      <p>
+        Need to change or withdraw a reference later? Email{' '}
+        <a class="blue" href="mailto:hello@shemarmarks.com">
+          hello@shemarmarks.com
+        </a>
+        .
+      </p>
+    </aside>
+    <form id="testimonial-form" action="/api/testimonials" method="post" data-turnstile-key={key}>
+      <div class="form-grid">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input name="name" id="name" required autocomplete="name" maxlength="120" />
+        </div>
+        <div class="field">
+          <label for="email">
+            Email <span>(private)</span>
+          </label>
+          <input
+            name="email"
+            id="email"
+            type="email"
+            required
+            autocomplete="email"
+            maxlength="254"
+          />
+        </div>
+        <div class="field">
+          <label for="company">
+            Company <span>(optional)</span>
+          </label>
+          <input name="company" id="company" autocomplete="organization" maxlength="160" />
+        </div>
+        <div class="field">
+          <label for="title">
+            Job title <span>(optional)</span>
+          </label>
+          <input name="title" id="title" autocomplete="organization-title" maxlength="120" />
+        </div>
+        <div class="field full">
+          <label for="service">Project or service</label>
+          <input name="service" id="service" required maxlength="160" />
+        </div>
+        <div class="field full">
+          <label for="quote">Your reference</label>
+          <textarea
+            name="quote"
+            id="quote"
+            required
+            minlength="30"
+            maxlength="4000"
+            rows="7"
+            placeholder="What did we work on, and what was useful about the experience?"
+          ></textarea>
+        </div>
+        <div class="field">
+          <label for="project_date">
+            Project date <span>(optional)</span>
+          </label>
+          <input name="project_date" id="project_date" type="month" />
+        </div>
+        <div class="field">
+          <label for="project_value">
+            Project value <span>(optional, private by default)</span>
+          </label>
+          <input
+            name="project_value"
+            id="project_value"
+            maxlength="100"
+            placeholder="Amount and currency"
+          />
+        </div>
+        <div class="field">
+          <label for="website">
+            Website / profile <span>(optional)</span>
+          </label>
+          <input name="website" id="website" type="url" maxlength="500" />
+        </div>
+        <div class="field">
+          <label for="logo_url">
+            Company logo URL <span>(optional)</span>
+          </label>
+          <input name="logo_url" id="logo_url" type="url" maxlength="500" />
+          <small>Link only to a logo you have permission to use.</small>
+        </div>
+      </div>
+      <label class="checkbox">
+        <input name="identity_consent" type="checkbox" />I give permission to display my name, job
+        title, and company with this reference.
+      </label>
+      <label class="checkbox">
+        <input name="value_consent" type="checkbox" />I give permission to display the project value
+        I provided, subject to Shemar’s separate approval.
+      </label>
+      <label class="checkbox">
+        <input name="privacy" type="checkbox" required />
+        I’ve read the <a href="/privacy/">privacy notice</a> and agree to these details being used
+        to verify and review this submission.
+      </label>
+      <div class="hp" aria-hidden="true">
+        <label for="fax">Leave blank</label>
+        <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
+      </div>
+      <div class="turnstile-area" data-turnstile></div>
+      <button class="button" type="submit">
+        Submit for review <Icon size={17} />
+      </button>
+      <p class="form-message" role="status" aria-live="polite"></p>
+      <noscript>
+        <p class="scope-note">Please email hello@shemarmarks.com if JavaScript is unavailable.</p>
+      </noscript>
+    </form>
+  </section>
+  <script>
+    import '../../scripts/forms';
+  </script>
+</Layout>
