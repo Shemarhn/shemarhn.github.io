@@ -6,7 +6,7 @@ import worker, { processOutbox } from '../worker/index.ts';
 import extendedWorker from '../worker/entry.ts';
 import { processSocialOutbox, syncSocialDrafts } from '../worker/social.ts';
 import { publicReference, validateModeration } from '../worker/validation.ts';
-import { emailText } from '../worker/integrations.ts';
+import { emailText, emailHtml, gmailMessage } from '../worker/integrations.ts';
 import { SignJWT, generateKeyPair, exportJWK } from 'jose';
 import type { Env, Lead } from '../worker/types.ts';
 function database() {
@@ -585,6 +585,30 @@ test('confirmation is human, replyable, and does not echo private project descri
   assert.match(text, /Hi Test,/);
   assert.match(text, /reply to this email/);
   assert.ok(!text.includes(baseLead.description));
+});
+
+test('branded acknowledgment safely round-trips HTML and plain text through Gmail MIME', () => {
+  const lead = { ...baseLead, name: '<script> Élodie', service: 'Cloud & <Linux>' } as Lead;
+  const html = emailHtml(lead);
+  assert.ok(html.includes('&lt;script&gt;'));
+  assert.ok(html.includes('Cloud &amp; &lt;Linux&gt;'));
+  assert.ok(!html.includes('<script>'));
+  assert.ok(!html.includes(lead.description));
+  assert.match(html, /href="https:\/\/shemarmarks.com\/"/);
+  assert.match(html, /alt="Shemar Marks SM logo"/);
+  assert.match(html, /href="mailto:hello@shemarmarks.com"/);
+  const raw = Buffer.from(gmailMessage('test-id', lead), 'base64url').toString('utf8');
+  assert.match(raw, /Reply-To: hello@shemarmarks.com\r\n/);
+  assert.match(raw, /Message-ID: <test-id@shemarmarks.com>/);
+  const boundary = raw.match(/boundary="([^"]+)"/)![1];
+  const parts = raw.split(`--${boundary}`).slice(1, 3);
+  const bodies = parts.map((p) =>
+    Buffer.from(p.split('\r\n\r\n')[1].replace(/\s/g, ''), 'base64').toString('utf8'),
+  );
+  assert.match(parts[0], /Content-Type: text\/plain; charset=UTF-8/);
+  assert.match(parts[1], /Content-Type: text\/html; charset=UTF-8/);
+  assert.equal(bodies[0], emailText(lead));
+  assert.equal(bodies[1], html);
 });
 test('signed Access identity can create, moderate, and withhold a reference; wrong audience is denied', async () => {
   const s = setup();

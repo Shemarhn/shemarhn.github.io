@@ -1,4 +1,5 @@
 import type { Env, Lead } from './types.ts';
+import { signatureHtml, signatureText } from './email-signature.ts';
 export interface CRMAdapter {
   deliver(id: string, lead: Lead): Promise<void>;
 }
@@ -67,9 +68,45 @@ export function crmAdapter(env: Env): CRMAdapter {
     },
   };
 }
-export function emailText(lead: Lead) {
+function emailParagraphs(lead: Lead) {
   const first = lead.name.split(/\s+/)[0];
-  return `Hi ${first},\n\nThanks for reaching out. I’ve received your message about ${lead.service}.\n\nI’ll review what you sent and get back to you personally.\n\nIf there’s anything else that would be useful for me to know, just reply to this email.\n\nShemar\n\nCloud Infrastructure • Linux • Automation\nshemarmarks.com`;
+  return [
+    `Hi ${first},`,
+    `Thanks for reaching out. I’ve received your message about ${lead.service}.`,
+    'I’ll review what you sent and get back to you personally.',
+    'If there’s anything else that would be useful for me to know, just reply to this email.',
+  ];
+}
+export function emailText(lead: Lead) {
+  return [...emailParagraphs(lead), signatureText].join('\n\n');
+}
+export function emailHtml(lead: Lead) {
+  const escape = (value: string) =>
+    value.replace(
+      /[&<>"']/g,
+      (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!,
+    );
+  return `<!doctype html><html lang="en"><body style="margin:0;padding:20px;background-color:#ffffff;color:#1f2937;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6">${emailParagraphs(
+    lead,
+  )
+    .map((p) => `<p style="margin:0 0 18px">${escape(p)}</p>`)
+    .join('')}<div style="padding-top:8px">${signatureHtml()}</div></body></html>`;
+}
+function base64Utf8(value: string) {
+  let binary = '';
+  new TextEncoder().encode(value).forEach((byte) => (binary += String.fromCharCode(byte)));
+  return btoa(binary);
+}
+export function gmailMessage(id: string, lead: Lead) {
+  const boundary = `sm-${crypto.randomUUID()}`;
+  const part = (type: string, value: string) =>
+    `--${boundary}\r\nContent-Type: ${type}; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n${base64Utf8(
+      value,
+    )
+      .match(/.{1,76}/g)!
+      .join('\r\n')}\r\n`;
+  const raw = `From: Shemar Marks <hello@shemarmarks.com>\r\nTo: ${lead.email}\r\nReply-To: hello@shemarmarks.com\r\nSubject: Thanks for reaching out\r\nMessage-ID: <${id}@shemarmarks.com>\r\nMIME-Version: 1.0\r\nContent-Type: multipart/alternative; boundary="${boundary}"\r\n\r\n${part('text/plain', emailText(lead))}${part('text/html', emailHtml(lead))}--${boundary}--\r\n`;
+  return base64Utf8(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 export function emailAdapter(env: Env): EmailAdapter {
   return {
@@ -92,11 +129,6 @@ export function emailAdapter(env: Env): EmailAdapter {
         });
         await requireOK(tokenResponse, 'Gmail OAuth');
         const token = (await tokenResponse.json()) as { access_token: string };
-        const utf8 = new TextEncoder().encode(text);
-        let binary = '';
-        utf8.forEach((byte) => (binary += String.fromCharCode(byte)));
-        const raw = `From: ${from}\r\nTo: ${lead.email}\r\nReply-To: hello@shemarmarks.com\r\nSubject: ${subject}\r\nMessage-ID: <${id}@shemarmarks.com>\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n${btoa(binary)}`;
-        const encoded = btoa(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         const response = await fetch(
           'https://gmail.googleapis.com/gmail/v1/users/me/messages/send',
           {
@@ -105,7 +137,7 @@ export function emailAdapter(env: Env): EmailAdapter {
               Authorization: `Bearer ${token.access_token}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ raw: encoded }),
+            body: JSON.stringify({ raw: gmailMessage(id, lead) }),
             signal: timeout(),
           },
         );
@@ -125,6 +157,7 @@ export function emailAdapter(env: Env): EmailAdapter {
             reply_to: 'hello@shemarmarks.com',
             subject,
             text,
+            html: emailHtml(lead),
           }),
           signal: timeout(),
         });

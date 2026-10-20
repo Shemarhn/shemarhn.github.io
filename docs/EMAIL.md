@@ -1,6 +1,6 @@
 # Replyable acknowledgment email
 
-Both adapters send a short plain-text message from `Shemar Marks <hello@shemarmarks.com>`, with replies directed to `hello@shemarmarks.com`. They do not include private project descriptions. The visitor sees a successful receipt after database storage; email delivery has an independent retry record.
+Both adapters send a short message from `Shemar Marks <hello@shemarmarks.com>`, with replies directed to `hello@shemarmarks.com`. HTML includes a clickable SM logo and contact signature, with a complete plain-text alternative. Gmail uses multipart/alternative with UTF-8 base64 parts. The logo is a small first-party PNG; no tracking pixels or external fonts are included. User-supplied greeting/service text is HTML-escaped, and private project descriptions are excluded. The visitor sees a successful receipt after database storage; email delivery has an independent retry record.
 
 ## Recommended initial provider: Google Workspace / Gmail
 
