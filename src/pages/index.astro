@@ -21,98 +21,100 @@ const posts = (
   title="Cloud Infrastructure, Linux & Automation Consultant"
   description="Independent cloud infrastructure, Linux, and automation consulting by Shemar Marks. Clear ownership, repeatable deployments, and tested recovery for remote teams."
 >
-  <section class="hero wrap" aria-labelledby="hero-title">
-    <div class="hero-topline mono">
-      <span>
-        <span class="status-dot"></span> SHEMAR MARKS / INDEPENDENT CONSULTANT
-      </span>
-      <span class="hero-coordinate">JAMAICA / WORKING REMOTELY</span>
-    </div>
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">CLOUD INFRASTRUCTURE · LINUX · AUTOMATION</p>
-        <h1 id="hero-title">
-          Infrastructure.
-          <br />
-          Built to <span class="hero-word">hold.</span>
-        </h1>
-        <p class="hero-lead">
-          I build, improve, and automate the systems
-          <br class="desktop-break" /> your business depends on.
-        </p>
-        <div class="hero-actions">
-          <a class="button" href="/contact/?cta=Homepage%20hero">
-            Discuss a project <Icon size={18} />
-          </a>
-          <a class="text-link" href="/work/">
-            Explore my work <span aria-hidden="true">↘</span>
-          </a>
-        </div>
-        <p class="hero-footnote">Clear ownership. Thoughtful engineering. A usable handover.</p>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div class="hero-topline mono">
+        <span>
+          <span class="status-dot"></span> SHEMAR MARKS / INDEPENDENT CONSULTANT
+        </span>
+        <span class="hero-coordinate">JAMAICA / WORKING REMOTELY</span>
       </div>
-      <div class="hero-scene" data-sm-hero>
-        <AmbientGrid id="hero-drafting" cross />
-        <canvas class="ribbon-canvas" data-ribbon aria-hidden="true"></canvas>
-        <div class="scene-orbit scene-orbit-one" aria-hidden="true"></div>
-        <div class="scene-orbit scene-orbit-two" aria-hidden="true"></div>
-        <div class="scene-floor" aria-hidden="true"></div>
-        <div
-          class="hero-logo-frame"
-          data-logo-tilt
-          role="img"
-          aria-label="Shemar Marks faceted SM monogram"
-        >
-          <Monogram id="hero-sm" />
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">CLOUD INFRASTRUCTURE · LINUX · AUTOMATION</p>
+          <h1 id="hero-title">
+            Infrastructure.
+            <br />
+            Built to <span class="hero-word">hold.</span>
+          </h1>
+          <p class="hero-lead">
+            I build, improve, and automate the systems
+            <br class="desktop-break" /> your business depends on.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="/contact/?cta=Homepage%20hero">
+              Discuss a project <Icon size={18} />
+            </a>
+            <a class="text-link" href="/work/">
+              Explore my work <span aria-hidden="true">↘</span>
+            </a>
+          </div>
+          <p class="hero-footnote">Clear ownership. Thoughtful engineering. A usable handover.</p>
         </div>
-        <span class="scene-label scene-label-top mono">
-          <i></i>CLOUD
-        </span>
-        <span class="scene-label scene-label-left mono">
-          <i></i>SYSTEMS
-        </span>
-        <span class="scene-label scene-label-right mono">
-          <i></i>AUTOMATION
-        </span>
-        <div class="scene-caption">
-          <span class="mono">SM / CONNECTED BY DESIGN</span>
-          <button
-            class="monogram-replay"
-            data-logo-replay
-            type="button"
-            aria-label="Replay logo assembly"
+        <div class="hero-scene" data-sm-hero>
+          <AmbientGrid id="hero-drafting" cross />
+          <canvas class="ribbon-canvas" data-ribbon aria-hidden="true"></canvas>
+          <div class="scene-orbit scene-orbit-one" aria-hidden="true"></div>
+          <div class="scene-orbit scene-orbit-two" aria-hidden="true"></div>
+          <div class="scene-floor" aria-hidden="true"></div>
+          <div
+            class="hero-logo-frame"
+            data-logo-tilt
+            role="img"
+            aria-label="Shemar Marks faceted SM monogram"
           >
-            <Icon name="recover" size={14} /> REPLAY
-          </button>
+            <Monogram id="hero-sm" />
+          </div>
+          <span class="scene-label scene-label-top mono">
+            <i></i>CLOUD
+          </span>
+          <span class="scene-label scene-label-left mono">
+            <i></i>SYSTEMS
+          </span>
+          <span class="scene-label scene-label-right mono">
+            <i></i>AUTOMATION
+          </span>
+          <div class="scene-caption">
+            <span class="mono">SM / CONNECTED BY DESIGN</span>
+            <button
+              class="monogram-replay"
+              data-logo-replay
+              type="button"
+              aria-label="Replay logo assembly"
+            >
+              <Icon name="recover" size={14} /> REPLAY
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="hero-bottom">
-      <div class="hero-stack-teaser">
-        <span class="mono">ACROSS THE STACK</span>
-        {['aws', 'azure', 'gcp', 'cloudflare', 'docker', 'terraform'].map((id) => (
-          <img
-            src={`/assets/technologies/${id}.svg`}
-            width="25"
-            height="25"
-            alt={
-              id === 'gcp'
-                ? 'Google Cloud'
-                : id === 'aws'
-                  ? 'AWS'
-                  : id === 'azure'
-                    ? 'Azure'
-                    : id === 'cloudflare'
-                      ? 'Cloudflare'
-                      : id === 'docker'
-                        ? 'Docker'
-                        : 'Terraform'
-            }
-          />
-        ))}
+      <div class="hero-bottom">
+        <div class="hero-stack-teaser">
+          <span class="mono">ACROSS THE STACK</span>
+          {['aws', 'azure', 'gcp', 'cloudflare', 'docker', 'terraform'].map((id) => (
+            <img
+              src={`/assets/technologies/${id}.svg`}
+              width="25"
+              height="25"
+              alt={
+                id === 'gcp'
+                  ? 'Google Cloud'
+                  : id === 'aws'
+                    ? 'AWS'
+                    : id === 'azure'
+                      ? 'Azure'
+                      : id === 'cloudflare'
+                        ? 'Cloudflare'
+                        : id === 'docker'
+                          ? 'Docker'
+                          : 'Terraform'
+              }
+            />
+          ))}
+        </div>
+        <a href="#perspective" class="scroll-hint mono">
+          SCROLL TO EXPLORE <Icon name="down" size={15} />
+        </a>
       </div>
-      <a href="#perspective" class="scroll-hint mono">
-        SCROLL TO EXPLORE <Icon name="down" size={15} />
-      </a>
     </div>
   </section>
   <section id="perspective" class="intro section wrap">

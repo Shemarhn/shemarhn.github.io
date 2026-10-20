@@ -55,7 +55,7 @@
 .hero {
   padding-top: 30px;
   isolation: isolate;
-  overflow: visible;
+  overflow: clip;
 }
 .hero::before {
   content: '';
