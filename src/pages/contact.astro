@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import InquiryForm from '../components/InquiryForm.astro';
+---
+
+<Layout
+  title="Discuss a Project — Cloud, Linux, Automation & Websites"
+  description="Tell Shemar Marks about your cloud infrastructure, Linux, automation, or website project. Direct collaboration with an independent engineer, starting with a clear scope."
+>
+  <PageHero
+    label="CONTACT / LET’S START WITH THE SYSTEM"
+    title="What needs to"
+    accent="work better?"
+    description="Tell me where you are, where you want to get to, and what’s in the way. I’ll review your message and get back to you personally."
+  />
+  <section class="form-layout section wrap">
+    <aside class="form-aside">
+      <p class="eyebrow">ONE POINT OF CONTACT</p>
+      <h2>
+        You’ll talk
+        <br />
+        directly with me.
+      </h2>
+      <p>
+        A defined project, a technical question about scope, or extra capacity for your team—start
+        with what you know.
+      </p>
+      <a class="text-link" href="mailto:hello@shemarmarks.com">
+        hello@shemarmarks.com ↗
+      </a>
+      <p class="small">
+        Based in Jamaica.
+        <br />
+        Available for remote engagements with US, Canadian, and international teams.
+      </p>
+      <ul>
+        <li>Clear deliverables before implementation</li>
+        <li>Access and confidentiality agreed</li>
+        <li>Useful documentation at handover</li>
+      </ul>
+    </aside>
+    <InquiryForm />
+  </section>
+</Layout>

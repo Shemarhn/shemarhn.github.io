@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Architecture from '../../components/Architecture.astro';
+import Icon from '../../components/Icon.astro';
+import { projects } from '../../data/site';
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+const { project: p } = Astro.props;
+const repo = `https://github.com/Shemarhn/${p.repo}`;
+---
+
+<Layout
+  title={`${p.name} — ${p.title}`}
+  description={`${p.summary} An executed synthetic case study with architecture, implementation, recorded outcomes, and limitations.`}
+>
+  <section class="page-hero case-hero wrap">
+    <p class="eyebrow">CASE STUDY / {p.type} / SYNTHETIC ENGAGEMENT</p>
+    <h1>
+      {p.name}
+      <span class="blue">.</span>
+    </h1>
+    <div class="page-hero-bottom">
+      <p>{p.summary}</p>
+      <a
+        class="text-link"
+        href={`${repo}/blob/main/docs/CASE-STUDY.md`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Read original evidence <Icon size={17} />
+      </a>
+    </div>
+    <div class="tag-list">
+      {p.tags.map((t) => (
+        <span class="tag">{t}</span>
+      ))}
+    </div>
+    <div class="case-architecture">
+      <Architecture steps={p.architecture} />
+    </div>
+  </section>
+  <section class="content-grid section wrap">
+    <aside>
+      <p class="eyebrow">THE ENGINEERING STORY</p>
+      <a href="#problem">01 / Problem</a>
+      <a href="#constraints">02 / Constraints</a>
+      <a href="#implementation">03 / Implementation</a>
+      <a href="#outcome">04 / Outcome</a>
+      <a href="#lessons">05 / Lessons</a>
+      <a href={`${repo}/tree/main/evidence`} target="_blank" rel="noopener noreferrer">
+        Evidence repository ↗
+      </a>
+    </aside>
+    <article class="prose">
+      <h2 id="problem">{p.title}</h2>
+      <p>{p.problem}</p>
+      <h2 id="constraints">The constraints shape the system.</h2>
+      <p>{p.constraints}</p>
+      <h2 id="implementation">The implementation.</h2>
+      <ol>
+        {p.approach.map((a) => (
+          <li>{a}</li>
+        ))}
+      </ol>
+      <h2 id="outcome">What the checks showed.</h2>
+      <div class="case-result">
+        <p class="eyebrow">RECORDED LAB OUTCOME</p>
+        <p>{p.result}</p>
+      </div>
+      <h3>What this result means.</h3>
+      <p>{p.limits}</p>
+      {p.slug === 'northstar' && (
+        <figure>
+          <img
+            src="/assets/northstar-recovery.webp"
+            alt="Recovered Northstar application with six jobs including DR-TEST."
+            width="960"
+            height="510"
+            loading="lazy"
+          />
+          <figcaption class="small muted">
+            Original post-recovery evidence from the Northstar lab.
+          </figcaption>
+        </figure>
+      )}
+      <h2 id="lessons">What I would improve.</h2>
+      <p>{p.lesson}</p>
+      <h2>Inspect the work.</h2>
+      <p>
+        Read the{' '}
+        <a href={`${repo}/blob/main/docs/CASE-STUDY.md`} target="_blank" rel="noopener noreferrer">
+          original case study
+        </a>
+        , browse the{' '}
+        <a href={`${repo}/tree/main/evidence`} target="_blank" rel="noopener noreferrer">
+          preserved evidence
+        </a>
+        , or inspect the{' '}
+        <a href={repo} target="_blank" rel="noopener noreferrer">
+          implementation repository
+        </a>
+        .
+      </p>
+      <div class="scope-note">
+        <p>
+          Related service:{' '}
+          <a href={`/services/${p.service}/`}>
+            {p.service === 'backup-disaster-recovery'
+              ? 'Backup & Disaster Recovery'
+              : p.service === 'linux-systems'
+                ? 'Linux & Systems'
+                : 'Workflow Automation'}
+          </a>
+          . A production engagement starts with your actual workload, risks, and acceptance
+          criteria.
+        </p>
+      </div>
+    </article>
+  </section>
+  <section class="callout wrap">
+    <div>
+      <h2>Working through something similar?</h2>
+      <p>Tell me about your environment and what needs to improve.</p>
+    </div>
+    <a class="button" href={`/contact/?cta=Case%20study&campaign=${p.name}`}>
+      Discuss a project <Icon size={18} />
+    </a>
+  </section>
+</Layout>

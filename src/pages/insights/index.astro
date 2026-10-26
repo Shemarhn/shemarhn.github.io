@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { getCollection } from 'astro:content';
+const posts = (
+  await getCollection(
+    'insights',
+    ({ data }) => data.status === 'published' && data.date <= new Date(),
+  )
+).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const categories = ['All', ...new Set(posts.map((p) => p.data.category))];
+---
+
+<Layout
+  title="Infrastructure Insights — Linux, Cloud & Automation"
+  description="Practical guides from Shemar Marks on cloud infrastructure, Linux hardening, backup and disaster recovery, and reliable automation."
+>
+  <PageHero
+    label="INSIGHTS / PRACTICAL ENGINEERING NOTES"
+    title="Understand the system."
+    accent="Make better decisions."
+    description="Notes on the decisions, checks, and operating details behind useful infrastructure. Written for the people who build it—and the people who depend on it."
+  />
+  <section class="section wrap">
+    <div class="filter-bar" role="group" aria-label="Filter insights by category">
+      {categories.map((c, i) => (
+        <button data-filter={c} aria-pressed={i === 0 ? 'true' : 'false'}>
+          {c}
+        </button>
+      ))}
+    </div>
+    <div>
+      {posts.map((post) => (
+        <a class="blog-card" href={`/insights/${post.id}/`} data-category={post.data.category}>
+          <div class="article-hero-art" aria-hidden="true">
+            <span class="mono">
+              SM /<br />
+              INSIGHTS
+            </span>
+            <img src="/assets/sm-monogram.svg" width="75" height="75" alt="" />
+          </div>
+          <div>
+            <p class="eyebrow">
+              {post.data.category} / {post.data.readTime} MIN READ
+            </p>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.excerpt}</p>
+          </div>
+          <Icon size={22} />
+        </a>
+      ))}
+    </div>
+    <p class="small muted" style="margin-top:35px">
+      By{' '}
+      <a class="blue" href="/about/">
+        Shemar Marks
+      </a>{' '}
+      · <a href="/rss.xml">Subscribe via RSS ↗</a>
+    </p>
+  </section>
+</Layout>

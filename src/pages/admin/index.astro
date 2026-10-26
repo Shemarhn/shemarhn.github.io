@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Reference Administration"
+  description="Private moderation for Shemar Marks client references."
+  noindex
+>
+  <section class="section wrap">
+    <p class="eyebrow">PRIVATE / CLOUDFLARE ACCESS</p>
+    <h1 style="font-size:clamp(2.5rem,5vw,5rem)">Reference moderation.</h1>
+    <p style="margin-block:25px">
+      Review permissions before publishing. Verification is a separate manual check of the client
+      relationship.
+    </p>
+    <div class="admin-tab">
+      <button class="button" data-admin-refresh>
+        Refresh submissions
+      </button>
+      <button class="button secondary" data-admin-new>
+        Add a reference
+      </button>
+      <a class="button secondary" href="/admin/social/">Social publishing</a>
+      <a class="button secondary" href="/admin/data/">Data & retention</a>
+    </div>
+    <p class="form-message" role="status" data-admin-message></p>
+    <div id="admin-editor" hidden style="margin-block:35px">
+      <h2 style="font-size:30px;margin-bottom:25px">Add a reference</h2>
+      <form id="admin-create">
+        <div class="form-grid">
+          {[
+            ['name', 'Client name'],
+            ['email', 'Email (private)'],
+            ['company', 'Company'],
+            ['title', 'Job title'],
+            ['service', 'Project / service'],
+            ['project_date', 'Project date (YYYY-MM)'],
+            ['project_value', 'Project value (private)'],
+            ['website', 'Website / profile'],
+            ['logo_url', 'Logo URL'],
+          ].map(([name, label]) => (
+            <div class="field">
+              <label for={`new-${name}`}>{label}</label>
+              <input
+                id={`new-${name}`}
+                name={name}
+                type={
+                  name === 'email'
+                    ? 'email'
+                    : name === 'website' || name === 'logo_url'
+                      ? 'url'
+                      : 'text'
+                }
+                required={['name', 'service'].includes(name)}
+                maxlength={name === 'website' || name === 'logo_url' ? '500' : '160'}
+              />
+            </div>
+          ))}
+          <div class="field full">
+            <label for="new-quote">Quote</label>
+            <textarea
+              id="new-quote"
+              name="quote"
+              required
+              minlength="30"
+              maxlength="4000"
+            ></textarea>
+          </div>
+        </div>
+        <label class="checkbox">
+          <input name="identity_consent" type="checkbox" />
+          Permission to display identity has been obtained.
+        </label>
+        <label class="checkbox">
+          <input name="value_consent" type="checkbox" />
+          Client consent to display value has been obtained.
+        </label>
+        <label class="checkbox">
+          <input name="owner_value_authorized" type="checkbox" />I authorize commercial disclosure
+          for this owner-entered reference.
+        </label>
+        <button type="submit" class="button">
+          Save to pending review
+        </button>
+      </form>
+    </div>
+    <div id="admin-list"></div>
+    <h2 style="font-size:30px;margin-block:50px 20px">Delivery queue</h2>
+    <p class="small muted" style="margin-bottom:20px">
+      Investigate uncertain email outcomes before retrying older jobs.
+    </p>
+    <button class="button secondary" data-deliveries-refresh>
+      Refresh deliveries
+    </button>
+    <div id="delivery-list" style="margin-top:25px"></div>
+  </section>
+  <script>
+    import '../../scripts/admin';
+  </script>
+</Layout>

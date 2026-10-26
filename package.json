@@ -1,0 +1,42 @@
+{
+  "name": "shemar-marks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": ">=11 <12"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro check && tsc -p tsconfig.worker.json && astro build",
+    "preview": "wrangler dev --local --port 4321",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:site": "node scripts/audit-site.mjs",
+    "build:qa": "node scripts/build-qa.mjs",
+    "deploy:staging": "pnpm build && wrangler deploy --env staging",
+    "deploy": "pnpm build && wrangler deploy",
+    "db:local": "wrangler d1 migrations apply DB --local",
+    "db:remote": "wrangler d1 migrations apply DB --remote",
+    "build:production": "node scripts/prepare-production.mjs && pnpm test && pnpm build && pnpm test:site"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.2.0",
+    "@fontsource/ibm-plex-mono": "^5.2.0",
+    "animejs": "^4.5.0",
+    "astro": "^7.4.0",
+    "jose": "^6.1.0",
+    "motion": "^14.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@cloudflare/workers-types": "^5.20261006.1",
+    "axe-core": "^4.14.0",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "sharp": "^0.34.4",
+    "typescript": "^5.9.0",
+    "wrangler": "^4.45.0"
+  }
+}

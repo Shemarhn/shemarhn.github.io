@@ -1,0 +1,120 @@
+---
+import Icon from './Icon.astro';
+import { formServices } from '../data/site';
+const turnstile = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+---
+
+<form id="inquiry-form" action="/api/inquiries" method="post" data-turnstile-key={turnstile}>
+  <div class="form-steps">
+    <span>01 / YOUR PROJECT</span>
+    <span>02 / PERSONAL FOLLOW-UP</span>
+  </div>
+  <div class="form-grid">
+    <div class="field">
+      <label for="name">Your name</label>
+      <input
+        id="name"
+        name="name"
+        autocomplete="name"
+        required
+        maxlength="120"
+        placeholder="First and last name"
+      />
+    </div>
+    <div class="field">
+      <label for="email">Email address</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
+        maxlength="254"
+        placeholder="you@company.com"
+      />
+    </div>
+    <div class="field">
+      <label for="company">
+        Company <span>(optional)</span>
+      </label>
+      <input id="company" name="company" autocomplete="organization" maxlength="160" />
+    </div>
+    <div class="field">
+      <label for="website">
+        Website <span>(optional)</span>
+      </label>
+      <input
+        id="website"
+        name="website"
+        type="url"
+        autocomplete="url"
+        maxlength="500"
+        placeholder="https://"
+      />
+    </div>
+    <div class="field full">
+      <label for="service">What can I help with?</label>
+      <select id="service" name="service" required>
+        <option value="">Select a service</option>
+        {formServices.map((s) => (
+          <option value={s}>{s}</option>
+        ))}
+      </select>
+    </div>
+    <div class="field full">
+      <label for="description">Tell me about the project</label>
+      <textarea
+        id="description"
+        name="description"
+        required
+        minlength="20"
+        maxlength="6000"
+        rows="6"
+        placeholder="What are you running? What needs to change? What would a good result look like?"
+      ></textarea>
+      <small>
+        At least 20 characters. Please leave out passwords, access tokens, and confidential data.
+      </small>
+    </div>
+    <div class="field">
+      <label for="timeline">Your timeline</label>
+      <select id="timeline" name="timeline" required>
+        <option value="">Select a timeline</option>
+        <option>ASAP</option>
+        <option>This month</option>
+        <option>1–3 months</option>
+        <option>Just exploring</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="budget">
+        Budget range <span>(optional)</span>
+      </label>
+      <input id="budget" name="budget" maxlength="120" placeholder="An estimate is fine" />
+    </div>
+  </div>
+  <div class="hp" aria-hidden="true">
+    <label for="fax">Leave this blank</label>
+    <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
+  </div>
+  <label class="checkbox">
+    <input name="privacy" type="checkbox" required />
+    I’ve read the <a href="/privacy/">privacy notice</a> and agree to the use of these details to
+    respond to my inquiry.
+  </label>
+  <div class="turnstile-area" data-turnstile></div>
+  <button type="submit" class="button">
+    Send project inquiry <Icon size={18} />
+  </button>
+  <p class="form-footnote">This starts a conversation. It does not commit you to an engagement.</p>
+  <p class="form-message" role="status" aria-live="polite"></p>
+  <noscript>
+    <p class="scope-note">
+      The spam-protected form needs JavaScript. You can email{' '}
+      <a href="mailto:hello@shemarmarks.com">hello@shemarmarks.com</a> directly.
+    </p>
+  </noscript>
+</form>
+<script>
+  import '../scripts/forms';
+</script>

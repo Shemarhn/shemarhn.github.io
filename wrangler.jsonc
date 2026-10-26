@@ -1,0 +1,56 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shemar-marks",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "shemarmarks.com/*", "zone_name": "shemarmarks.com" },
+    { "pattern": "www.shemarmarks.com/*", "zone_name": "shemarmarks.com" },
+  ],
+  "main": "worker/entry.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "none",
+    "not_found_handling": "none",
+  },
+  "vars": {
+    "APP_ENV": "production",
+    "TURNSTILE_HOSTNAMES": "shemarmarks.com,www.shemarmarks.com,shemar-marks.shemarmarks.workers.dev",
+    "EMAIL_PROVIDER": "gmail",
+    "SOCIAL_MODE": "review",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "shemar-marks",
+      "database_id": "7ac03e7c-e8ac-4798-9f1f-0f0e4e133ea9",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "observability": { "enabled": true, "head_sampling_rate": 0.1 },
+  "env": {
+    "staging": {
+      "name": "shemar-marks-staging",
+      "routes": [],
+      "workers_dev": true,
+      "vars": {
+        "APP_ENV": "staging",
+        "TURNSTILE_HOSTNAMES": "staging.shemarmarks.com,shemar-marks-staging.shemarmarks.workers.dev",
+        "EMAIL_PROVIDER": "gmail",
+        "SOCIAL_MODE": "review",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "shemar-marks-staging",
+          "database_id": "0bf4e1e1-e3ec-44e6-84ff-710f1b820e86",
+          "migrations_dir": "migrations",
+        },
+      ],
+      "triggers": { "crons": ["*/5 * * * *"] },
+    },
+  },
+}

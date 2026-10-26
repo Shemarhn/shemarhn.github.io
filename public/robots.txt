@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /social.json
+Sitemap: https://shemarmarks.com/sitemap.xml
