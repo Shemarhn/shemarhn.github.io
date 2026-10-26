@@ -20,7 +20,7 @@ Shemarhn/shemarhn.github.io : main
   -> https://shemarmarks.com/
 ```
 
-The repository name does not activate GitHub Pages. Keep **Settings > Pages > Branch = None**. There is no Pages deployment workflow. The obsolete root `index.html`, styles/script, robots, sitemap and `.nojekyll` are removed; Git history and the pre-migration Git bundle retain them. `migration/github-pages/` is an unused historical redirect template, not a publishing source. Existing root assets are historical reference assets and are not uploaded by Wrangler; only `dist/` is public.
+The repository name does not activate GitHub Pages. Keep **Settings > Pages > Source = GitHub Actions**, with no Pages deployment workflow configured. This stops automatic Jekyll builds from main. The old deployment was unpublished before the source switch. The obsolete root `index.html`, styles/script, robots, sitemap and `.nojekyll` are removed; Git history and the pre-migration Git bundle retain them. `migration/github-pages/` is an unused historical redirect template, not a publishing source. Existing root assets are historical reference assets and are not uploaded by Wrangler; only `dist/` is public.
 
 The production Worker redirects HTTP, www, and its exact production workers.dev hostname to HTTPS apex. GET/HEAD redirects use 301; other methods use 308 to preserve bodies. Page-path normalization preserves attribution queries and avoids chains. Staging/preview/local hosts remain isolated and noindex. Unknown pages return 404. Retired Pages returns 404 rather than a competing page; it does not provide a 301 or transfer old fragment-link traffic.
 
@@ -63,7 +63,7 @@ The validation job records provenance on main, tests, type-checks, builds, audit
 
 1. Save the old repository refs/Git bundle and current Worker version; capture DNS, Pages, routes, CI and public SEO evidence.
 2. Confirm current production metadata, forms configuration, D1/Access bindings and Workspace records.
-3. Disable Pages publishing before merging, so the modern source cannot be exposed accidentally by Pages.
+3. Unpublish Pages, then set its source to GitHub Actions without configuring any Pages workflow. Verify a later main push cannot restart branch-based Jekyll publishing.
 4. Add canonical redirects, release provenance, automated verification and current documentation; remove obsolete root Pages entry files. Validate PR #1 and merge the verified revision into main.
 5. Configure the GitHub production environment token and repository variables; authorize only required deployment access. Verify a real main commit produces a successful Actions deployment and matching `/deployment.json` revision. Until this is demonstrated, automation remains incomplete.
 6. Run `node scripts/verify-production.mjs` with `EXPECTED_REVISION` set to the deployed main SHA. Preserve its JSON report. Confirm email DNS unchanged, existing aggregate analytics present, and anonymous admin access denied.
