@@ -13,13 +13,13 @@
 - Updated the GitHub profile website, profile README portfolio/email links, and website/Northstar/Harborlight repository About links to the custom domain. GitHub account email verification settings are separate and were preserved.
 - Found a still-public older Sites portfolio at `https://shemar-marks.marks-shemarhn.chatgpt.site`. Kept its audience/content, added noindex, and changed canonical/OG/sitemap/email metadata to production. Published Sites version 3, source `98c1431541e1083cc520275315206830af3b287e`, deployment `appgdep_6adf83d1fd4c8191978649d23d791848`. The original source remains recoverable at `1dd815ff35ea4cee94895094e6ed69d8d7b42b8d`.
 
-## Automatic deployment activation still required
+## Automatic deployment
 
 The main workflow now contains a tested-build deployment path with serialized releases, a current-main check, exact build artifact reuse, and a public verification report. Repository variables `PUBLIC_TURNSTILE_SITE_KEY` and `CLOUDFLARE_ACCOUNT_ID` are saved. The GitHub `production` environment exists and permits only the `main` branch, with no tags.
 
-Activation is intentionally incomplete until the owner approves creating a narrowly scoped Cloudflare deployment credential and storing it as `CLOUDFLARE_API_TOKEN` in that environment. `ENABLE_PRODUCTION_DEPLOY` remains unset. No automatic main-to-production release has yet been demonstrated. The original task requested automatic deployment; this receipt does not represent that requirement as complete.
+The owner approved creating and storing the production deployment credential. Cloudflare created `GitHub shemarmarks.com production`, scoped to `shemar-marks` and `shemarmarks.com`, with Individual Workers Editor and Workers Routes Write permissions. It is stored encrypted as `CLOUDFLARE_API_TOKEN` in the main-only production environment. `ENABLE_PRODUCTION_DEPLOY=true` activates the deployment job. The token value was transferred directly between provider interfaces, never into source/evidence files, and cleared from the clipboard afterward.
 
-After credential approval: create the Worker-scoped deployment token, save it encrypted in the production environment, set `ENABLE_PRODUCTION_DEPLOY=true`, push/merge a reviewed main update, and verify a successful deployment job plus `/deployment.json` matching that main SHA. If the Worker-scoped token lacks permission to reconcile the existing routes/bindings, inspect the exact failure and request only the additional resource permissions required; do not replace it with a global API key.
+This documentation update exercises a real main-push release. Its GitHub Actions run records validation, deployment and all public URL/revision checks, with the `production-audit` JSON artifact retained on the run. Accept a release only when that run succeeds and `/deployment.json` matches its main SHA. Future successful main pushes/merges use the same path; PR/scheduled runs cannot deploy. If the Worker-scoped token lacks permission to reconcile the existing routes/bindings, inspect the exact failure and request only the additional resource permissions required; do not replace it with a global API key.
 
 ## Recovery and remaining limits
 

@@ -1,6 +1,6 @@
 # Production deployment and rollback
 
-Audit date: 26 October 2026 (Jamaica). Deployment completion is recorded separately in the migration receipt; desired configuration below must be verified in both dashboards.
+Audit date: 26 October 2026 (Jamaica). See [the migration receipt](MIGRATION-2026-10-26.md) for the audit findings, completed changes, credential scope, and verification records.
 
 ## What the audit established
 
@@ -20,7 +20,7 @@ Shemarhn/shemarhn.github.io : main
   -> https://shemarmarks.com/
 ```
 
-The repository name does not activate GitHub Pages. Keep **Settings > Pages > Source = GitHub Actions**, with no Pages deployment workflow configured. This stops automatic Jekyll builds from main. The old deployment was unpublished before the source switch. The obsolete root `index.html`, styles/script, robots, sitemap and `.nojekyll` are removed; Git history and the pre-migration Git bundle retain them. `migration/github-pages/` is an unused historical redirect template, not a publishing source. Existing root assets are historical reference assets and are not uploaded by Wrangler; only `dist/` is public.
+Keep **Settings > Pages > Source = GitHub Actions**, with no Pages deployment workflow configured. This stops automatic Jekyll builds from main; the old deployment was unpublished before the source switch. The repository retains its existing name and history. The obsolete root `index.html`, styles/script, robots, sitemap and `.nojekyll` are removed; Git history and the pre-migration Git bundle retain them. `migration/github-pages/` is an unused historical redirect template, not a publishing source. Existing root assets are historical reference assets and are not uploaded by Wrangler; only `dist/` is public.
 
 The production Worker redirects HTTP, www, and its exact production workers.dev hostname to HTTPS apex. GET/HEAD redirects use 301; other methods use 308 to preserve bodies. Page-path normalization preserves attribution queries and avoids chains. Staging/preview/local hosts remain isolated and noindex. Unknown pages return 404. Retired Pages returns 404 rather than a competing page; it does not provide a 301 or transfer old fragment-link traffic.
 
