@@ -1,3 +1,7 @@
+# Historical launch checklist
+
+The production site is live. Use [DEPLOYMENT.md](DEPLOYMENT.md) for the current deployment architecture, migration sequence, and rollback. The checklist below records original launch preparation.
+
 # Launch checklist
 
 The implementation is prepared for Cloudflare Workers with static assets. Nothing should be published to the primary domain until staging, DNS, email, and form delivery are verified.

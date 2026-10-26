@@ -18,7 +18,8 @@
     "deploy:staging": "pnpm build && wrangler deploy --env staging",
     "deploy": "pnpm build && wrangler deploy",
     "db:local": "wrangler d1 migrations apply DB --local",
-    "db:remote": "wrangler d1 migrations apply DB --remote"
+    "db:remote": "wrangler d1 migrations apply DB --remote",
+    "build:production": "node scripts/prepare-production.mjs && pnpm test && pnpm build && pnpm test:site"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.2.0",

@@ -8,3 +8,6 @@ dist/
 .dev.vars
 reports/*.html
 reports/*.json
+
+# Generated release provenance
+public/deployment.json

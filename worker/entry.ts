@@ -2,6 +2,7 @@ import { createRemoteJWKSet, jwtVerify } from 'jose';
 import baseWorker from './index.ts';
 import { processSocialOutbox, syncSocialDrafts } from './social.ts';
 import type { Env } from './types.ts';
+import { canonicalRedirect } from './canonical.ts';
 
 class HttpError extends Error {
   status: number;
@@ -198,6 +199,8 @@ async function extendedAdmin(request: Request, env: Env, ctx: ExecutionContext) 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     try {
+      const redirect = canonicalRedirect(request, env);
+      if (redirect) return redirect;
       const path = new URL(request.url).pathname;
       const extendedPath =
         /^\/api\/admin\/(?:inquiries|social)(?:\/|$)/.test(path) ||

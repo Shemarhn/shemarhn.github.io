@@ -1,10 +1,10 @@
 # Shemar Marks
 
-A static-first Astro 7 website with a separate Cloudflare Worker for inquiries, references, analytics, authentication, and durable delivery. Prepared for `shemarmarks.com`; not deployed or connected to live accounts by this build.
+A static-first Astro 7 website with a separate Cloudflare Worker for inquiries, references, analytics, authentication, and durable delivery. Production runs at https://shemarmarks.com on Cloudflare Workers with D1. The source of truth is the `main` branch of this repository. GitHub Pages publishing is disabled.
 
 ## Start here
 
-1. Read [the launch checklist](docs/LAUNCH.md).
+1. Read [production deployment and rollback](docs/DEPLOYMENT.md).
 2. Read [the architecture](docs/ARCHITECTURE.md) and [verification report](docs/VERIFICATION.md).
 3. Use Node.js 24 and pnpm 11. The lockfile records tested dependency versions.
 
@@ -60,4 +60,4 @@ The HTTP smoke test needs the local Worker and writes synthetic records only to 
 - [Vector identity, motion, technology explorer, and licenses](docs/DESIGN-SYSTEM.md)
 - [Test results and verification limits](docs/VERIFICATION.md)
 
-Development is on `site-experience-v2` in [Shemarhn/shemarhn.github.io](https://github.com/Shemarhn/shemarhn.github.io). The existing default-branch history and live GitHub Pages files are preserved. The Astro application builds from `src/` into `dist/`; legacy root HTML is not part of that build. Production remains gated until the account resources in the launch checklist are configured.
+Production is built from `src/` into `dist/` and deployed by GitHub Actions from `main`, after tests, type checks, and the generated-site audit. Deployment activation requires the production environment credential and repository variables in [DEPLOYMENT.md](docs/DEPLOYMENT.md). The legacy root Pages entry files are retired; history remains available. Verify `/deployment.json` against the main commit after a release.
