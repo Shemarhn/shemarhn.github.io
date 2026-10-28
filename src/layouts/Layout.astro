@@ -9,7 +9,7 @@ import { site } from '../data/site';
 interface Props {
   title: string;
   description: string;
-  schema?: Record<string, unknown>;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
   article?: boolean;
   image?: string;
@@ -34,7 +34,27 @@ const person = {
   jobTitle: 'Independent Consultant',
   sameAs: Object.values(site.socials),
   image: `${site.url}/assets/shemar-marks.webp`,
-  knowsAbout: ['Cloud Infrastructure', 'Linux', 'Terraform', 'Automation'],
+  knowsAbout: [
+    'Cloud Infrastructure',
+    'AWS',
+    'Microsoft Azure',
+    'Linux',
+    'Proxmox',
+    'Terraform',
+    'Automation',
+  ],
+  hasCredential: [
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'BSc Computer Science',
+      credentialCategory: 'degree',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      name: 'AWS Certified Cloud Practitioner',
+      credentialCategory: 'certification',
+    },
+  ],
 };
 const graph = [
   {
@@ -46,13 +66,16 @@ const graph = [
   },
   person,
   {
-    '@type': 'ProfessionalService',
+    '@type': 'Organization',
     '@id': `${site.url}/#service`,
     name: 'Shemar Marks — Independent Consulting',
     url: site.url,
     email: site.email,
     founder: { '@id': `${site.url}/#person` },
+    logo: `${site.url}/assets/sm-monogram.svg`,
+    sameAs: Object.values(site.socials),
     description: site.descriptor,
+    areaServed: ['United States', 'Canada', 'United Kingdom', 'Europe', 'Caribbean'],
   },
   ...(path === '/'
     ? []
@@ -61,11 +84,31 @@ const graph = [
           '@type': 'BreadcrumbList',
           itemListElement: [
             { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
-            { '@type': 'ListItem', position: 2, name: title.split(' | ')[0], item: canonical },
+            ...(path.match(/^\/(services|work|insights)\/[^/]+\//)
+              ? [
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name:
+                      path.split('/')[1] === 'services'
+                        ? 'Services'
+                        : path.split('/')[1] === 'work'
+                          ? 'Work'
+                          : 'Insights',
+                    item: `${site.url}/${path.split('/')[1]}/`,
+                  },
+                ]
+              : []),
+            {
+              '@type': 'ListItem',
+              position: path.match(/^\/(services|work|insights)\/[^/]+\//) ? 3 : 2,
+              name: title.split(' | ')[0],
+              item: canonical,
+            },
           ],
         },
       ]),
-  ...(schema ? [schema] : []),
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []),
 ];
 const nav = [
   ['Services', '/services/'],
@@ -81,9 +124,11 @@ const analytics = import.meta.env.PUBLIC_ANALYTICS_TOKEN;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script is:inline src="/motion-preference.js"></script>
     <title>{title} | Shemar Marks</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#080f1c" />
+    {path === '/' && <meta name="msvalidate.01" content="4FA60B7F501C47147288A0C0875C6CD8" />}
     <meta
       name="robots"
       content={noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large'}
@@ -115,6 +160,10 @@ const analytics = import.meta.env.PUBLIC_ANALYTICS_TOKEN;
     <meta name="twitter:title" content={`${title} | Shemar Marks`} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(image, site.url).href} />
+    <meta
+      name="twitter:image:alt"
+      content="Shemar Marks — Cloud Infrastructure, Linux, Automation"
+    />
     <script
       type="application/ld+json"
       set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(
@@ -180,7 +229,9 @@ const analytics = import.meta.env.PUBLIC_ANALYTICS_TOKEN;
             Shemar Marks<span class="blue">.</span>
           </a>
           <p>Cloud Infrastructure · Linux · Automation</p>
-          <p>Based in Jamaica. Working remotely.</p>
+          <p>
+            Based in Jamaica. Remote consulting for US, Canadian, UK, European, and Caribbean teams.
+          </p>
         </div>
         <div>
           <a href="/services/">Services</a>

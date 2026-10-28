@@ -22,7 +22,7 @@ async function get(url) {
 const sitemap = await get(origin + '/sitemap.xml');
 const urls = [...sitemap.body.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 check(
-  sitemap.response.status === 200 && urls.length >= 24,
+  sitemap.response.status === 200 && urls.length >= 25,
   'Sitemap must list the production pages',
 );
 for (const url of urls) {
@@ -44,6 +44,18 @@ for (const url of urls) {
   }
 }
 const robots = await get(origin + '/robots.txt');
+const homepage = await get(origin + '/');
+check(homepage.body.includes('Previously worked with'), 'Homepage credibility section missing');
+check(homepage.body.includes('4FA60B7F501C47147288A0C0875C6CD8'), 'Bing verification tag missing');
+const logoManifest = JSON.parse(
+  await (await import('node:fs/promises')).readFile('vendor/previous-work-logos.json', 'utf8'),
+);
+for (const logo of logoManifest) {
+  const response = await fetch(origin + logo.file, { signal: AbortSignal.timeout(25000) });
+  const bytes = (await response.arrayBuffer()).byteLength;
+  rows.push({ url: origin + logo.file, status: response.status, bytes });
+  check(response.status === 200 && bytes === logo.bytes, `Logo missing or changed: ${logo.name}`);
+}
 check(
   robots.body.includes('Sitemap: ' + origin + '/sitemap.xml') &&
     !/^Disallow: \/\s*$/m.test(robots.body),

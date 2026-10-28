@@ -1,3 +1,4 @@
+import { searchChannel } from '../../shared/analytics';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const root = document.documentElement;
 if (import.meta.env.PUBLIC_QA_AUDIT === 'true') import('./qa');
@@ -40,7 +41,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 // UTM and referrer persist within this tab only; no cookies or third-party identifier.
-export function attribution() {
+export function attribution(): Record<string, string> {
   const q = new URLSearchParams(location.search);
   let prior: Record<string, string> = {};
   try {
@@ -55,7 +56,15 @@ export function attribution() {
     ...prior,
     ...fresh,
     landing_page: prior.landing_page || location.pathname,
-    referrer: prior.referrer || document.referrer.slice(0, 500),
+    referrer: prior.landing_page ? prior.referrer || '' : document.referrer.slice(0, 500),
+    traffic_channel: prior.landing_page
+      ? prior.traffic_channel || ''
+      : searchChannel(
+          document.referrer,
+          fresh.utm_medium,
+          fresh.utm_source,
+          q.has('gclid') || q.has('msclkid'),
+        ),
   };
   try {
     sessionStorage.setItem('sm-attribution', JSON.stringify(stored));
@@ -69,7 +78,10 @@ export function attribution() {
     submitted_at: new Date().toISOString(),
   };
 }
-attribution();
+const firstVisit = attribution();
+const organicChannel = ['google', 'bing'].includes(firstVisit.traffic_channel)
+  ? firstVisit.traffic_channel
+  : '';
 export function track(name: string, details: Record<string, string> = {}) {
   if (
     navigator.doNotTrack === '1' ||
@@ -82,12 +94,15 @@ export function track(name: string, details: Record<string, string> = {}) {
   window.dispatchEvent(
     new CustomEvent('sm:analytics', { detail: { name, ...details, page: location.pathname } }),
   );
-  fetch('/api/events', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, page: location.pathname }),
-    keepalive: true,
-  }).catch(() => {});
+  const send = (event: string) =>
+    fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: event, page: location.pathname }),
+      keepalive: true,
+    }).catch(() => {});
+  send(name);
+  if (organicChannel) send(`${organicChannel}_organic_${name}`);
 }
 track('page_view');
 if (location.pathname.startsWith('/work/') && location.pathname !== '/work/')
@@ -98,6 +113,32 @@ document
 document
   .querySelectorAll<HTMLAnchorElement>('[data-track]')
   .forEach((a) => a.addEventListener('click', () => track(a.dataset.track || 'link_click')));
+document.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((a) => {
+  if (a.dataset.track || a.getAttribute('href')?.startsWith('mailto:')) return;
+  const url = new URL(a.href, location.href);
+  if (url.origin !== location.origin) {
+    if (/^(www\.)?(calendly\.com|cal\.com)$/.test(url.hostname))
+      a.addEventListener('click', () => track('booking_click'));
+    return;
+  }
+  const event =
+    url.pathname === '/contact/'
+      ? location.pathname.startsWith('/services/')
+        ? 'service_cta_click'
+        : location.pathname === '/pricing/'
+          ? 'pricing_cta_click'
+          : location.pathname.startsWith('/work/')
+            ? 'case_study_cta_click'
+            : location.pathname.startsWith('/insights/')
+              ? 'blog_cta_click'
+              : 'contact_cta_click'
+      : url.pathname === '/pricing/'
+        ? 'pricing_link_click'
+        : /^\/work\/[^/]+\/$/.test(url.pathname)
+          ? 'case_study_click'
+          : '';
+  if (event) a.addEventListener('click', () => track(event));
+});
 const dialog = document.querySelector<HTMLDialogElement>('#website-dialog');
 let opener: HTMLElement | null = null;
 document.querySelectorAll<HTMLButtonElement>('[data-modal-open]').forEach((button) =>

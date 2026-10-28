@@ -35,6 +35,7 @@ forms.forEach((form) => {
     const raw = params.get('service') || '';
     const aliases: Record<string, string> = {
       'Linux & Systems': 'Linux / Systems',
+      'Proxmox & Virtualization': 'Proxmox / Virtualization',
       'Workflow Automation': 'Automation',
       'Workflow automation': 'Automation',
       'Backup & Disaster Recovery': 'Backup / Disaster Recovery',
@@ -87,7 +88,8 @@ forms.forEach((form) => {
         service: String(payload.service || ''),
       });
       const origin = attribution();
-      if (origin.cta === 'Service page') track('service_conversion');
+      if (origin.cta === 'Service page' || origin.cta.startsWith('SERVICES /'))
+        track('service_conversion');
       if (origin.cta === 'Insight article') track('blog_conversion');
       if (form.id === 'inquiry-form') location.assign('/thank-you/');
       else {

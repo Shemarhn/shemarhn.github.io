@@ -1,5 +1,7 @@
 # SEO research and content plan
 
+See [the 27 October acquisition pass](ORGANIC-GROWTH-2026-10-27.md) for current Search Console evidence, service mapping, measurement and prioritized 30/60/90-day actions. The historical plan below remains useful background.
+
 Research date: **19 October 2026**. This is a technical/content foundation, not a ranking forecast. No paid keyword-volume dataset was available; the intent map below is qualitative and must be refined using actual Search Console/Bing data.
 
 ## Current primary guidance used

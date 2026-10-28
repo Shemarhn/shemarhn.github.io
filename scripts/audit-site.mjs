@@ -43,7 +43,7 @@ for (const file of htmlFiles) {
     }
   }
   for (const match of html.matchAll(/<img\b[^>]*>/g))
-    check(/\balt=/.test(match[0]), 'image missing alt');
+    check(/\balt(?:=|\s|>)/.test(match[0]), 'image missing alt');
   check(
     !/shemarmarks\.tech@gmail\.com|noreply@|lorem ipsum/i.test(html),
     'legacy or placeholder content',
@@ -61,6 +61,36 @@ for (const file of htmlFiles) {
     check(ids.has(match[1]), `missing anchor ${match[1]}`);
 }
 const homepage = await readFile(join(root, 'index.html'));
+const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');
+const sitemapURLs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
+if (new Set(sitemapURLs).size !== sitemapURLs.length) failures.push('Duplicate sitemap URLs');
+for (const url of sitemapURLs) {
+  if (!url.startsWith('https://shemarmarks.com/') || !url.endsWith('/'))
+    failures.push(`Invalid sitemap URL: ${url}`);
+  const path = new URL(url).pathname;
+  const html = await readFile(join(root, path, 'index.html'), 'utf8');
+  if (/name="robots" content="[^"]*noindex/.test(html))
+    failures.push(`Noindex sitemap URL: ${url}`);
+  if (!html.includes(`rel="canonical" href="${url}"`))
+    failures.push(`Sitemap canonical mismatch: ${url}`);
+}
+const logoManifest = JSON.parse(await readFile('vendor/previous-work-logos.json', 'utf8'));
+const homeText = homepage.toString();
+if (!homeText.includes('Previously worked with') || homeText.includes('Trusted by'))
+  failures.push('Credibility wording changed');
+for (const logo of logoManifest) {
+  if (
+    !homeText.includes(`src="${logo.file}"`) ||
+    !(logo.id === 'proxcenter'
+      ? homeText.includes('>ProxCenter</span>')
+      : homeText.includes(`alt="${logo.name}"`))
+  )
+    failures.push(`Missing logo: ${logo.name}`);
+  if ((await stat(join(root, logo.file))).size !== logo.bytes)
+    failures.push(`Logo asset size mismatch: ${logo.name}`);
+}
+if (!sitemapURLs.includes('https://shemarmarks.com/services/proxmox-virtualization/'))
+  failures.push('Proxmox page absent from sitemap');
 const css = files.filter((f) => f.endsWith('.css'));
 const js = files.filter((f) => f.endsWith('.js'));
 const size = async (fs) => {
@@ -73,6 +103,9 @@ const report = {
   htmlPages: htmlFiles.length,
   localLinksChecked: links,
   jsonldDocuments: jsonld,
+  sitemapURLs: sitemapURLs.length,
+  credibilityLogos: logoManifest.length,
+  credibilityLogoBytes: logoManifest.reduce((sum, logo) => sum + logo.bytes, 0),
   homepageHTMLGzip: gzipSync(homepage).length,
   totalCSS: await size(css),
   totalJS: await size(js),

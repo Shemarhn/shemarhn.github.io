@@ -5,6 +5,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Monogram from '../components/Monogram.astro';
 import AmbientGrid from '../components/AmbientGrid.astro';
 import TechnologyCarousel from '../components/TechnologyCarousel.astro';
+import PreviousWork from '../components/PreviousWork.astro';
 import { services, projects } from '../data/site';
 import { getCollection } from 'astro:content';
 const posts = (
@@ -25,7 +26,7 @@ const posts = (
     <div class="wrap">
       <div class="hero-topline mono">
         <span>
-          <span class="status-dot"></span> SHEMAR MARKS / INDEPENDENT CONSULTANT
+          <span class="status-dot"></span> SHEMAR MARKS — INDEPENDENT CONSULTANT
         </span>
         <span class="hero-coordinate">JAMAICA / WORKING REMOTELY</span>
       </div>
@@ -38,8 +39,8 @@ const posts = (
             Built to <span class="hero-word">hold.</span>
           </h1>
           <p class="hero-lead">
-            I build, improve, and automate the systems
-            <br class="desktop-break" /> your business depends on.
+            I help small businesses, startups, and technical teams build, improve, and automate
+            cloud infrastructure and Linux systems—with tested recovery and a clear handover.
           </p>
           <div class="hero-actions">
             <a class="button" href="/contact/?cta=Homepage%20hero">
@@ -49,7 +50,9 @@ const posts = (
               Explore my work <span aria-hidden="true">↘</span>
             </a>
           </div>
-          <p class="hero-footnote">Clear ownership. Thoughtful engineering. A usable handover.</p>
+          <p class="hero-footnote">
+            BSc Computer Science · AWS Certified Cloud Practitioner · Independent, remote consulting
+          </p>
         </div>
         <div class="hero-scene" data-sm-hero>
           <AmbientGrid id="hero-drafting" cross />
@@ -117,6 +120,7 @@ const posts = (
       </div>
     </div>
   </section>
+  <PreviousWork />
   <section id="perspective" class="intro section wrap">
     <p class="eyebrow reveal">01 / THE WAY I THINK</p>
     <div>
@@ -169,7 +173,10 @@ const posts = (
       ))}
     </div>
     <div class="section-end">
-      <p class="muted">Also: documentation, ongoing care, agency partnerships, and websites.</p>
+      <p class="muted">
+        Also: <a href="/services/proxmox-virtualization/">Proxmox & virtualization</a>,
+        documentation, ongoing care, agency partnerships, and websites.
+      </p>
       <a class="text-link" href="/services/">
         Explore all services <Icon size={16} />
       </a>

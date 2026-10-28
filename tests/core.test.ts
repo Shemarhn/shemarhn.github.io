@@ -9,6 +9,7 @@ import { publicReference, validateModeration } from '../worker/validation.ts';
 import { emailText, emailHtml, gmailMessage } from '../worker/integrations.ts';
 import { SignJWT, generateKeyPair, exportJWK } from 'jose';
 import type { Env, Lead } from '../worker/types.ts';
+import { searchChannel } from '../shared/analytics.ts';
 function database() {
   const db = new DatabaseSync(':memory:');
   db.exec(readFileSync(new URL('../migrations/0001_initial.sql', import.meta.url), 'utf8'));
@@ -128,6 +129,55 @@ async function submit(
     s.ctx,
   );
 }
+test('organic funnel events aggregate safely, respect privacy headers, and reject arbitrary names', async () => {
+  const s = setup();
+  for (const name of [
+    'testimonial_submission',
+    'service_cta_click',
+    'google_organic_contact_submission',
+    'bing_organic_pricing_cta_click',
+  ]) {
+    const response = await submit(s, '/api/events', {
+      name,
+      page: '/services/proxmox-virtualization/',
+    });
+    assert.equal(response.status, 204);
+  }
+  assert.equal(s.db.prepare('SELECT SUM(count) n FROM event_counts').get()!.n, 4);
+  assert.equal(
+    (await submit(s, '/api/events', { name: 'arbitrary_event', page: '/' })).status,
+    400,
+  );
+  for (const headers of [{ DNT: '1' }, { 'Sec-GPC': '1' }]) {
+    assert.equal(
+      (await submit(s, '/api/events', { name: 'page_view', page: '/' }, { headers })).status,
+      204,
+    );
+  }
+  assert.equal(s.db.prepare('SELECT SUM(count) n FROM event_counts').get()!.n, 4);
+  assert.equal(searchChannel('https://www.google.co.uk/search?q=private'), 'google');
+  assert.equal(searchChannel('https://www.bing.com/search?q=private'), 'bing');
+  assert.equal(searchChannel('https://google.com.evil.test/'), '');
+  assert.equal(searchChannel('https://www.google.com/', 'cpc', 'google'), '');
+  assert.equal(searchChannel('https://www.google.com/', '', '', true), '');
+  assert.equal(searchChannel('', 'organic', 'bing'), 'bing');
+});
+
+test('Proxmox inquiries retain the selected service and durable delivery behavior', async () => {
+  const s = setup();
+  const r = await submit(s, '/api/inquiries', {
+    ...baseLead,
+    service: 'Proxmox / Virtualization',
+    requestId: crypto.randomUUID(),
+  });
+  assert.equal(r.status, 201);
+  assert.equal(
+    JSON.parse(String(s.db.prepare('SELECT payload FROM inquiries').get()!.payload)).service,
+    'Proxmox / Virtualization',
+  );
+  assert.equal(s.db.prepare('SELECT count(*) n FROM outbox').get()!.n, 2);
+});
+
 test('an inquiry is durably saved with two independent outbox jobs before acknowledgment', async () => {
   const s = setup();
   const r = await submit(s);

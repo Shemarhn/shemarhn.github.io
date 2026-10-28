@@ -21,6 +21,8 @@ Open `http://127.0.0.1:4321`. Windows users can use `Copy-Item` instead of `cp`.
 
 Local form testing works only on a loopback hostname with `APP_ENV=development` and `LOCAL_FORM_TESTING=true`. There is **no local administrator authentication bypass**. The admin route fails closed until Cloudflare Access is configured.
 
+The preview command explicitly sets the local upstream to `127.0.0.1:4321`; otherwise Wrangler infers the production route hostname and correctly refuses the loopback-only form test bypass.
+
 Astro telemetry may be disabled with `ASTRO_TELEMETRY_DISABLED=1`. Wrangler metrics may be disabled with `WRANGLER_SEND_METRICS=false`.
 
 ## Checks

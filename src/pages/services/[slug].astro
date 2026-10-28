@@ -2,26 +2,58 @@
 import Layout from '../../layouts/Layout.astro';
 import PageHero from '../../components/PageHero.astro';
 import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { serviceSearch } from '../../data/service-search';
 import { services, projects, site } from '../../data/site';
+import { getCollection } from 'astro:content';
 export function getStaticPaths() {
   return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
 }
 const { service: s } = Astro.props;
+const search = serviceSearch[s.slug];
+const insights = await getCollection(
+  'insights',
+  ({ data }) =>
+    data.status === 'published' && data.date <= new Date() && data.relatedServices.includes(s.slug),
+);
 const project = projects.find((p) => p.slug === s.related)!;
 const schema = {
   '@type': 'Service',
+  '@id': `${site.url}/services/${s.slug}/#service`,
   name: s.name,
   description: s.summary,
   url: `${site.url}/services/${s.slug}/`,
   provider: { '@id': `${site.url}/#person` },
   serviceType: s.name,
+  areaServed: ['United States', 'Canada', 'United Kingdom', 'Europe', 'Caribbean'],
+  availableChannel: {
+    '@type': 'ServiceChannel',
+    serviceUrl: `${site.url}/contact/`,
+    availableLanguage: 'English',
+  },
+};
+const faq = {
+  '@type': 'FAQPage',
+  '@id': `${site.url}/services/${s.slug}/#faq`,
+  mainEntity: [
+    { '@type': 'Question', name: s.faq[0], acceptedAnswer: { '@type': 'Answer', text: s.faq[1] } },
+  ],
 };
 ---
 
-<Layout title={`${s.name} Consulting`} description={s.summary} schema={schema}>
+<Layout
+  title={search.title}
+  description={
+    s.slug === 'cloud-infrastructure'
+      ? 'AWS and Azure infrastructure consulting for small teams. Plan cloud deployments, migrations, networking, access, and recovery with a documented handover.'
+      : s.summary
+  }
+  schema={[schema, faq]}
+>
+  <Breadcrumbs section="Services" href="/services/" current={s.name} />
   <PageHero
     label={`SERVICES / ${s.name}`}
-    title={s.short}
+    title={search.h1}
     description={s.intro}
     cta="Discuss this service"
     service={s.name}
@@ -36,6 +68,8 @@ const schema = {
       <a href={`/work/${project.slug}/`}>Related lab: {project.name} ↗</a>
     </aside>
     <div class="prose">
+      <h2>{s.short}</h2>
+      <p>{search.context}</p>
       <h2 id="fit">When this is useful.</h2>
       <p>{s.fit}</p>
       <ul>
@@ -76,6 +110,58 @@ const schema = {
         <summary>{s.faq[0]}</summary>
         <p>{s.faq[1]}</p>
       </details>
+      {s.slug === 'cloud-infrastructure' && (
+        <>
+          <h2>AWS infrastructure help.</h2>
+          <p>
+            Scope EC2 application hosting, VPC and security-group configuration, IAM and Systems
+            Manager access, S3 backup storage, and CloudWatch operational signals around the
+            workload. The <a href="/work/northstar/">NORTHSTAR recovery lab</a> shows an executed
+            AWS and Terraform example, including its validation and cleanup.
+          </p>
+          <h2>Azure infrastructure help.</h2>
+          <p>
+            Review virtual machines, virtual networks, access boundaries, and the migration path
+            from the current host. Azure was my first cloud platform. Implementation starts with
+            your existing configuration and the services required by your application; unfamiliar
+            specialist services are identified before a scope is accepted.
+          </p>
+        </>
+      )}
+      {s.slug === 'proxmox-virtualization' && (
+        <>
+          <h2>Prepare for a useful first assessment.</h2>
+          <p>
+            Bring an inventory of hosts and guests, current hypervisor versions, storage layout and
+            free capacity, network/VLAN mappings, backup destinations, and the services that cannot
+            be interrupted. Share sanitized summaries first; credentials and confidential
+            configuration do not belong in the contact form.
+          </p>
+          <p>
+            A snapshot alone does not establish an independent recovery path. Identify which copies
+            survive loss of the host, storage, or site, then test restoration of a representative
+            workload. Read{' '}
+            <a href="/insights/a-backup-is-not-a-recovery-plan/">
+              why a backup is not a recovery plan
+            </a>{' '}
+            and the{' '}
+            <a href="/services/backup-disaster-recovery/">backup and disaster recovery service</a>{' '}
+            for the recovery scope.
+          </p>
+        </>
+      )}
+      {insights.length > 0 && (
+        <>
+          <h2>Practical reading before a project.</h2>
+          <ul>
+            {insights.map((post) => (
+              <li>
+                <a href={`/insights/${post.id}/`}>{post.data.title}</a> — {post.data.excerpt}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
       <h2>Connected services.</h2>
       <p>
         {services
@@ -87,6 +173,13 @@ const schema = {
               {i < 2 ? ' · ' : ''}
             </>
           ))}
+      </p>
+      <p>
+        Review <a href="/pricing/">engagements and pricing expectations</a>,{' '}
+        <a href="/about/">my background</a>, and{' '}
+        <a href="/insights/">practical infrastructure notes</a> before we discuss a scope. Remote
+        work is available for US, Canadian, UK, European, and Caribbean teams, with access and
+        working hours agreed in advance.
       </p>
     </div>
   </section>

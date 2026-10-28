@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro check && tsc -p tsconfig.worker.json && astro build",
-    "preview": "wrangler dev --local --port 4321",
+    "preview": "wrangler dev --local --port 4321 --local-upstream 127.0.0.1:4321",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "test:site": "node scripts/audit-site.mjs",
     "build:qa": "node scripts/build-qa.mjs",

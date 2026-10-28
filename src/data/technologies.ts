@@ -86,7 +86,7 @@ export const technologies: Technology[] = [
     icon: 'proxmox',
     description:
       'On-prem virtualization and virtual machines, considered together with off-host backup and recovery boundaries.',
-    service: 'backup-disaster-recovery',
+    service: 'proxmox-virtualization',
   },
   {
     id: 'docker',

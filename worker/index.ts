@@ -10,6 +10,7 @@ import {
 } from './validation.ts';
 import { crmAdapter, emailAdapter, ConfigurationError, DeliveryError } from './integrations.ts';
 import type { Env, Job, Lead, Reference } from './types.ts';
+import { validEvent } from '../shared/analytics.ts';
 
 class HttpError extends Error {
   status: number;
@@ -389,19 +390,9 @@ async function route(request: Request, env: Env, ctx: ExecutionContext): Promise
         return new Response(null, { status: 204 });
       await rateLimit(request, env, 'events', 60);
       const data = await body(request);
-      const name = string(data.name, 40);
+      const name = string(data.name, 64);
       const page = string(data.page, 200);
-      const allowed = [
-        'page_view',
-        'contact_submission',
-        'website_cta_click',
-        'email_click',
-        'case_study_view',
-        'case_study_click',
-        'service_conversion',
-        'blog_conversion',
-      ];
-      if (!allowed.includes(name) || !/^\/[a-z0-9\/-]*$/.test(page))
+      if (!validEvent(name) || !/^\/[a-z0-9\/-]*$/.test(page))
         throw new InputError('Invalid event.');
       await env.DB.prepare(
         'INSERT INTO event_counts(day,event,page,count) VALUES(?,?,?,1) ON CONFLICT(day,event,page) DO UPDATE SET count=count+1',

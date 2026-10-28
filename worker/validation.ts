@@ -41,6 +41,7 @@ export function validateLead(data: Record<string, unknown>): Lead {
   const services = [
     'Cloud Infrastructure',
     'Linux / Systems',
+    'Proxmox / Virtualization',
     'Automation',
     'Backup / Disaster Recovery',
     'DevOps / IaC',
@@ -67,6 +68,7 @@ export function validateLead(data: Record<string, unknown>): Lead {
     'campaign',
     'referrer',
     'landing_page',
+    'traffic_channel',
     'utm_source',
     'utm_medium',
     'utm_campaign',

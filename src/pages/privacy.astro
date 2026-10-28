@@ -8,7 +8,7 @@ import PageHero from '../components/PageHero.astro';
   description="How Shemar Marks handles project inquiries, reference submissions, permissions, and privacy-respectful website measurement."
 >
   <PageHero
-    label="PRIVACY / UPDATED 19 OCTOBER 2026"
+    label="PRIVACY / UPDATED 27 OCTOBER 2026"
     title="Your details."
     accent="Handled with care."
     description="This notice explains how information submitted through this website is used. For questions or requests, contact hello@shemarmarks.com."
@@ -30,9 +30,10 @@ import PageHero from '../components/PageHero.astro';
     </p>
     <p>
       Submissions are stored at the edge before an attempt to synchronize them to a private CRM or
-      send an acknowledgment. Cloudflare provides hosting, spam protection, and storage. Resend may
-      deliver acknowledgment emails when configured. These providers may process information outside
-      your country.
+      send an acknowledgment. Cloudflare provides hosting, spam protection, and storage. Google
+      Workspace delivers acknowledgment emails through the configured Gmail integration; Resend is
+      an optional alternative when configured. These providers may process information outside your
+      country.
     </p>
     <h2>References.</h2>
     <p>
@@ -52,9 +53,12 @@ import PageHero from '../components/PageHero.astro';
     <h2>Website measurement.</h2>
     <p>
       Cloudflare Web Analytics can provide aggregate page measurement when enabled. First-party
-      event counts record page views and interactions without persistent visitor identifiers. Form
-      attribution uses session storage within the current tab. Do Not Track and Global Privacy
-      Control disable first-party interaction measurement.
+      event counts record page views and interactions without persistent visitor identifiers. A
+      coarse Google or Bing organic-search category is inferred from the referrer or explicit
+      organic campaign tags and retained within the current tab; aggregate counts store only the
+      event name, page path, day, and count. Search terms and full referrer URLs are not sent with
+      interaction events. Form attribution uses session storage within the current tab. Do Not Track
+      and Global Privacy Control disable first-party interaction measurement.
     </p>
     <div class="privacy-controls">
       <label class="checkbox">

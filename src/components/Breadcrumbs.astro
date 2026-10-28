@@ -1,0 +1,25 @@
+---
+const { section, href, current } = Astro.props;
+---
+
+<nav class="breadcrumbs wrap" aria-label="Breadcrumb">
+  <a href="/">Home</a>
+  <span aria-hidden="true">/</span>
+  <a href={href}>{section}</a>
+  <span aria-hidden="true">/</span>
+  <span aria-current="page">{current}</span>
+</nav>
+<style>
+  .breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding-top: 1.5rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

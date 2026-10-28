@@ -343,9 +343,47 @@ export const services = [
       'Yes. A useful progression is website → forms and booking → automation → backend or cloud infrastructure → ongoing maintenance. Each step can be scoped independently.',
     ],
   },
+  {
+    slug: 'proxmox-virtualization',
+    name: 'Proxmox & Virtualization',
+    short: 'Virtual machines. Clear operating boundaries.',
+    category: 'Operate',
+    icon: 'nodes',
+    summary:
+      'Proxmox consulting for virtual machines, migration readiness, Linux guests, backup planning, and an operating handover your team can use.',
+    intro:
+      'Understand the hosts, storage, network, and workloads before changing the virtualization layer. I help small teams plan scoped Proxmox work and document how to operate and recover it.',
+    problems: [
+      'A Proxmox host or Linux guest needs a clearer operating and recovery plan.',
+      'A VMware-to-Proxmox move needs a readiness assessment before committing to a cutover.',
+      'VM backups share a failure boundary with the host they are meant to protect.',
+    ],
+    deliverables: [
+      'Host, guest, storage, and network dependency inventory',
+      'Migration readiness findings and a scoped change plan',
+      'Agreed VM or guest configuration changes',
+      'Backup location, retention, and restore validation plan',
+      'Maintenance, cutover, rollback, and operating notes',
+    ],
+    approach: [
+      'Inventory guest workloads, boot modes, storage, network mappings, licensing, and access.',
+      'Confirm hardware compatibility, capacity, backup copies, and the rollback boundary.',
+      'Validate one representative workload in an isolated pilot before scheduling production changes.',
+      'Record application checks and recovery limits, then hand over the operating runbook.',
+    ],
+    scope:
+      'Cluster, storage, high-availability, and migration requirements are assessed before acceptance. Ceph design, vendor support, and continuous on-call operations are not implied. No zero-downtime migration or recovery time is promised without evidence for the actual workload.',
+    fit: 'Small businesses, internal IT teams, agencies, and MSPs running Proxmox or considering virtualization changes and needing independent planning, scoped implementation, or documentation.',
+    related: 'northstar',
+    faq: [
+      'Can you help assess a VMware-to-Proxmox migration?',
+      'Yes. Start with the inventory, guest compatibility, storage and network mappings, a representative pilot, and tested backup copies. The assessment establishes what can be migrated safely and what needs specialist work before a cutover is agreed.',
+    ],
+  },
 ] as const;
 export const formServices = [
   'Cloud Infrastructure',
+  'Proxmox / Virtualization',
   'Linux / Systems',
   'Automation',
   'Backup / Disaster Recovery',

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { services, projects, site } from '../../data/site';
 export async function getStaticPaths() {
   const posts = await getCollection(
@@ -38,11 +39,15 @@ const related = allPosts
   .map((candidate) => {
     let score = candidate.data.category === d.category ? 4 : 0;
     score += candidate.data.tags.filter((tag) => d.tags.includes(tag)).length * 2;
-    score += candidate.data.relatedServices.filter((slug) => d.relatedServices.includes(slug)).length * 3;
+    score +=
+      candidate.data.relatedServices.filter((slug) => d.relatedServices.includes(slug)).length * 3;
     score += candidate.data.relatedCases.filter((slug) => d.relatedCases.includes(slug)).length * 3;
     return { candidate, score };
   })
-  .sort((a, b) => b.score - a.score || b.candidate.data.date.getTime() - a.candidate.data.date.getTime())
+  .sort(
+    (a, b) =>
+      b.score - a.score || b.candidate.data.date.getTime() - a.candidate.data.date.getTime(),
+  )
   .slice(0, 2)
   .map(({ candidate }) => candidate);
 ---
@@ -55,6 +60,7 @@ const related = allPosts
   image={d.hero}
   canonicalUrl={d.canonical}
 >
+  <Breadcrumbs section="Insights" href="/insights/" current={d.title} />
   <section class="page-hero wrap">
     <p class="eyebrow">
       INSIGHTS / {d.category} / {d.readTime} MIN READ

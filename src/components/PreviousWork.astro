@@ -1,0 +1,191 @@
+---
+import logos from '../../vendor/previous-work-logos.json';
+---
+
+<section class="previous-work" aria-labelledby="previous-work-title">
+  <div class="wrap previous-work-heading">
+    <h2 id="previous-work-title">Previously worked with</h2>
+    <p>
+      Across professional engagements, organizations supported through employment, and vendor
+      collaboration. These marks do not imply endorsement or that every organization directly hired
+      my independent consultancy.
+    </p>
+  </div>
+  <div class="logo-rail">
+    <div class="logo-track">
+      {[false, true].map((duplicate) => (
+        <ul
+          class="logo-group"
+          aria-label={duplicate ? undefined : 'Organizations and brands'}
+          aria-hidden={duplicate ? 'true' : undefined}
+        >
+          {logos.map((logo) => (
+            <li
+              class:list={['logo-plate', `logo-${logo.id}`, { 'logo-dark': logo.tone === 'dark' }]}
+            >
+              <img
+                src={logo.file}
+                alt={duplicate || logo.id === 'proxcenter' ? '' : logo.name}
+                width={logo.width}
+                height={logo.height}
+                loading="lazy"
+                decoding="async"
+              />
+              {logo.id === 'proxcenter' && <span class="logo-caption">ProxCenter</span>}
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .previous-work {
+    padding-block: clamp(2rem, 4vw, 4rem);
+    border-block: 1px solid #ffffff14;
+    overflow: hidden;
+  }
+  .previous-work-heading {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2.3rem);
+    letter-spacing: -0.04em;
+    line-height: 1.15;
+  }
+  p {
+    color: #aab6c9;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    max-width: 65ch;
+  }
+  .logo-rail {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  }
+  .logo-track {
+    display: flex;
+    width: max-content;
+    animation: previous-work-scroll 65s linear infinite;
+  }
+  .logo-group {
+    display: flex;
+    flex-shrink: 0;
+    gap: 18px;
+    padding: 0 18px 0 0;
+    margin: 0;
+    list-style: none;
+  }
+  .logo-plate {
+    width: 196px;
+    height: 94px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 1px solid #ffffff20;
+    border-radius: 6px;
+    background: #f4f6f9;
+  }
+  .logo-plate img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 48px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+  }
+  .logo-dark {
+    background: #152238;
+  }
+  .logo-wisynco {
+    background: #fff;
+    padding: 8px;
+  }
+  .logo-wisynco img {
+    max-height: 68px;
+  }
+  .logo-proxcenter {
+    gap: 10px;
+  }
+  .logo-proxcenter img {
+    max-height: 40px;
+  }
+  .logo-caption {
+    font-size: 1rem;
+    color: #fff;
+  }
+  .logo-aws img {
+    width: 83px;
+    max-height: 60px;
+  }
+  .logo-plate:hover img {
+    transform: scale(1.04);
+  }
+  @keyframes previous-work-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  :global(.motion-paused) .logo-track {
+    animation: none;
+    width: 100%;
+  }
+  :global(.motion-paused) .logo-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+  }
+  :global(.motion-paused) .logo-group[aria-hidden] {
+    display: none;
+  }
+  :global(.motion-paused) .logo-rail {
+    mask-image: none;
+    padding-inline: 1rem;
+  }
+  @media (max-width: 640px) {
+    .previous-work-heading {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .logo-plate {
+      width: 166px;
+      height: 84px;
+      padding: 18px;
+    }
+    .logo-wisynco {
+      padding: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logo-track {
+      animation: none;
+      width: 100%;
+    }
+    .logo-group {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0;
+      width: 100%;
+    }
+    .logo-group[aria-hidden] {
+      display: none;
+    }
+    .logo-rail {
+      mask-image: none;
+      padding-inline: 1rem;
+    }
+    .logo-plate img {
+      transition: none;
+    }
+    .logo-plate:hover img {
+      transform: none;
+    }
+  }
+</style>
