@@ -19,10 +19,22 @@ async function get(url) {
   rows.push(row);
   return { response, body, row };
 }
-const sitemap = await get(origin + '/sitemap.xml');
+let sitemap = await get(origin + '/sitemap.xml');
+// Asset propagation can briefly serve the previous XML immediately after a release.
+// Retry the same public URL; never lower the required page count or bypass the cache.
+for (
+  let attempt = 0;
+  attempt < 4 && !sitemap.body.includes(`${origin}/services/proxmox-virtualization/`);
+  attempt++
+) {
+  await new Promise((resolve) => setTimeout(resolve, (attempt + 1) * 3000));
+  sitemap = await get(origin + '/sitemap.xml');
+}
 const urls = [...sitemap.body.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1]);
 check(
-  sitemap.response.status === 200 && urls.length >= 25,
+  sitemap.response.status === 200 &&
+    urls.length >= 25 &&
+    urls.includes(`${origin}/services/proxmox-virtualization/`),
   'Sitemap must list the production pages',
 );
 for (const url of urls) {
