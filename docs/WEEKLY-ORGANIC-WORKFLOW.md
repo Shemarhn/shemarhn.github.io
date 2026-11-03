@@ -19,6 +19,8 @@ Saved inquiry counts come from the durable `inquiries` table; browser submission
 
 Review new saved inquiries privately in the existing inquiry/CRM workflow. Check delivery failures before assuming a quiet inbox means no inquiries. Maintain one private row per inquiry; use an opaque record/reference ID in summaries, with names, addresses, messages and confidential details kept out of this public repository.
 
+**Current operating status — owner clarification, 3 November 2026:** the CRM has not yet been deployed or activated. Use the website's saved inquiries and a private qualification record in the meantime. The two measured pending CRM synchronization jobs are expected and intentionally await activation; the two acknowledgment email jobs were delivered. No CRM retry or configuration change is needed now. When the CRM is ready, validate the complete inquiry-to-CRM path and reconcile the pending records without duplicating them. Do not flag this expected pending state as a fault.
+
 | Private field                | What to record                                                                                                                                                                                                       |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Inquiry ID and received date | Existing record ID; do not count an email retry or repeated follow-up as another opportunity                                                                                                                         |

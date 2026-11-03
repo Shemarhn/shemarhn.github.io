@@ -4,7 +4,7 @@
 
 **Measured:** Google currently reports 42 impressions and one click. D1 records 55 page views in the last seven complete UTC days, including two Google-attributed page views, and no saved inquiries in that week. There is not yet evidence of a repeatable organic acquisition engine or of qualified organic leads.
 
-**Observed:** The production foundation is sound: all 55 public verification requests passed across the 25 current sitemap URLs. The important gaps are buyer guidance, relevance of proof, internal connections and source attribution. The strongest immediate external repair is updating the retired portfolio links still displayed on LinkedIn and X.
+**Observed:** The production foundation is sound: all 55 public verification requests passed across the 25 current sitemap URLs. The important gaps are buyer guidance, relevance of proof, internal connections and source attribution. The retired LinkedIn and X profile website links identified in this audit were replaced on 3 November with `https://shemarmarks.com/` and verified in the built-in browser.
 
 **Implemented:** Improved all ten service pages through explicit related-service links, service-specific intake guidance and an additional useful FAQ; corrected website-development proof; strengthened work, About, homepage and pricing paths; added one Proxmox readiness article; fixed first-touch attribution consistency and privacy handling; supplied read-only weekly reporting and a practical operating routine. Existing individual positioning and visual design are retained. No ranking or lead improvement is claimed from these changes.
 
@@ -95,7 +95,7 @@ Cloudflare's account-home tiles showed 953 requests and roughly 1.7k Worker invo
 
 **Unavailable:** Whether these two records are genuine prospects, test records, qualified opportunities or clients was not established. Only aggregates were retrieved; names, emails, project messages and full referrers were not exported. Do not describe them as organic leads. Qualification, proposals and won work require the owner's private review/CRM status. Email and CTA clicks indicate intent rather than delivered messages or clients.
 
-**Measured operations:** The two acknowledgment email jobs are delivered; the two CRM jobs remain pending. Investigate CRM configuration/reachability through the existing delivery console before relying on CRM completeness. No jobs were retried and no email was sent by this audit. The production reference table has no rows, so there are currently no stored references to treat as conversion proof.
+**Measured operations:** The two acknowledgment email jobs are delivered; the two CRM jobs remain pending. **Owner clarification — 3 November 2026:** the CRM has not yet been deployed or activated, so these pending synchronization jobs are expected and are intentionally awaiting CRM activation, rather than indicating a fault. No retry or configuration change is needed now. Once the CRM is ready, validate the complete inquiry-to-CRM path and reconcile the pending records without duplicating them. No jobs were retried and no email was sent by this audit. The production reference table has no rows, so there are currently no stored references to treat as conversion proof.
 
 ## 8. Top pages and landing-page evidence
 
@@ -173,9 +173,9 @@ Page rows and property totals use different aggregation and must not be summed a
 
 ## 23. Off-site authority findings
 
-**Observed live:** LinkedIn's headline aligns with cloud/Linux/Proxmox/Terraform/recovery and white-label support. Its Contact info still links `https://shemarhn.github.io/`, the retired site. X's profile website and pinned introductory post also display the retired hostname. Those are concrete broken acquisition paths because the old Pages site returns 404. The GitHub profile README already uses production; its fresh source takes precedence over a stale search snippet. No reliable backlink inventory or domain-strength score was available.
+**Observed on 2 November:** LinkedIn's headline aligns with cloud/Linux/Proxmox/Terraform/recovery and white-label support. Its Contact info linked `https://shemarhn.github.io/`, the retired site. X's profile website and pinned introductory post also displayed the retired hostname. Those were concrete broken acquisition paths because the old Pages site returns 404. The GitHub profile README already uses production; its fresh source takes precedence over a stale search snippet. No reliable backlink inventory or domain-strength score was available.
 
-**Recommended owner action:** update LinkedIn's website and X's website to `https://shemarmarks.com/`; replace the old pinned X introduction when ready. No social message, post, DM or profile mutation was performed. Relevant earned contributions, eligibility-based directory review and useful project README links are prioritized in the market report; do not buy backlinks or spam communities.
+**Implemented on 3 November with owner authorization:** LinkedIn's Portfolio URL and X's Website field now use `https://shemarmarks.com/`; the saved public profile/contact views were checked. X offers no edit action for the older pinned introduction, so changing that historical post requires a separately authorized replacement post. No original post was deleted. Relevant earned contributions, eligibility-based directory review and useful project README links are prioritized in the market report; do not buy backlinks or spam communities.
 
 ## 24–28. Implementation and GitHub change inventory
 
@@ -191,7 +191,7 @@ Page rows and property totals use different aggregation and must not be summed a
 
 **Measured validation:** 32 tests pass; Astro check and Worker TypeScript pass with zero errors/warnings/hints; production build and static audit pass; 52 browser samples across all 26 public routes at 390px and 1440px have no axe violations or horizontal overflow. Local HTTP smoke passes route protection, durable form acceptance, idempotent replay and private reference moderation. A built-in mobile-browser submission also preserved the Proxmox service selection and reached the saved-inquiry receipt. Only synthetic local records were created, with no external mail/CRM credentials configured. Temporary QA build is followed by a clean normal build. An independent diff review found no actionable issue.
 
-**Release boundary:** Prepared as a pull request against main. Main is the established automatic production deploy trigger; this work does not bypass review by merging itself or deploying the branch directly. Content publishing documentation requires owner/editorial review. Production baseline remains the pre-change version until that review and merge. The PR's CI must pass on its exact head before release; no changed-page indexing or production result is claimed in advance.
+**Release boundary:** Prepared as a pull request against main; the owner authorized the merge on 3 November after reviewing the result. Main remains the established automatic production deploy trigger. Merge follows successful checks on the exact PR head, then the existing pipeline validates and deploys main. The measured baseline above remains the pre-change snapshot; production and indexing outcomes require separate post-release verification. No branch deployment bypass is used.
 
 GitHub review: [pull request #2](https://github.com/Shemarhn/shemarhn.github.io/pull/2).
 
@@ -199,15 +199,15 @@ Sanitized verification receipts: [pre-change production](../reports/production-b
 
 ## 29. Items needing owner involvement
 
-**Recommended:** review the article and service-scoping statements before merging; repair LinkedIn/X website links and the pinned X introduction; privately classify the two existing inquiries; provide public credential evidence if available; seek genuine references and permissioned professional case studies; choose approved numerical prices only if desired. Monitor failed delivery jobs through the existing admin flow before retrying any uncertain email. No new account, paid subscription or expanded permission is needed for this plan.
+**Completed owner decisions:** merge authorization and both profile website-link repairs. **Recommended:** decide on a replacement for the uneditable pinned X introduction; privately classify the two existing inquiries; provide public credential evidence if available; seek genuine references and permissioned professional case studies; choose approved numerical prices only if desired. Per the owner's 3 November clarification, CRM activation is a later integration step: the expected pending CRM jobs need no retry or configuration change now. Validate end-to-end synchronization and reconcile those records when the CRM is ready; investigate any actual failed delivery separately before retrying an uncertain email. No new account, paid subscription or expanded permission is needed for this plan.
 
 ## 30. Quick wins
 
-**Implemented:** proof relevance, deliberate links, buyer preparation, pricing scope clarity, first-touch consistency and privacy controls. **Recommended next:** repair retired social-profile links, release the reviewed branch through existing CI, confirm sitemap/canonicals, and record the next complete comparable week. There is no measured commercial ranking quick win yet; do not relabel an ambiguous name query as one.
+**Implemented:** proof relevance, deliberate links, buyer preparation, pricing scope clarity, first-touch consistency, privacy controls and the profile website-link repairs. **Recommended next:** release the reviewed branch through existing CI, confirm sitemap/canonicals, and record the next complete comparable week. There is no measured commercial ranking quick win yet; do not relabel an ambiguous name query as one.
 
 ## 31. First 30 days — through 2 December
 
-**Recommended:** review/merge/release; verify 26-page sitemap and indexing of changed priority pages; repair profile links; classify inquiry quality privately; run the weekly routine. Watch Proxmox, Linux, recovery, maintenance and documentation queries. Improve the existing backup article with one useful original restore-test example if evidence and buyer questions justify it. Keep a sanitized runbook example ready. Do not turn the plan into a posting quota or publish an interactive lead magnet.
+**Recommended:** complete the authorized merge/release; verify 26-page sitemap and indexing of changed priority pages; maintain the repaired profile links; classify inquiry quality privately; run the weekly routine. Watch Proxmox, Linux, recovery, maintenance and documentation queries. Improve the existing backup article with one useful original restore-test example if evidence and buyer questions justify it. Keep a sanitized runbook example ready. Do not turn the plan into a posting quota or publish an interactive lead magnet.
 
 ## 32. Days 31–60 — through 1 January 2027
 
@@ -225,7 +225,7 @@ Priority order: qualified organic inquiries; organic contact/email/booking inten
 
 ## 35. Risks and limitations
 
-**Observed / inferred:** Search reporting lags; query privacy hides most impressions; tiny samples and changing query mix distort averages. Attribution is inferred from referrers/UTMs and can be suppressed, spoofed or lost across tabs. DNT/GPC/opt-out and blocked scripts reduce measured actions. Owner/test/bot events are not isolated. Old inquiries have unknown source/quality. No search volumes, neutral rank tracker, competitor backlink metrics, field INP/CWV or statistically valid conversion rates were established. Public profile repair and professional proof require owner work. Valid markup, sitemap discovery and implementation are separate from indexing, clicks, inquiries and clients.
+**Observed / inferred:** Search reporting lags; query privacy hides most impressions; tiny samples and changing query mix distort averages. Attribution is inferred from referrers/UTMs and can be suppressed, spoofed or lost across tabs. DNT/GPC/opt-out and blocked scripts reduce measured actions. Owner/test/bot events are not isolated. Old inquiries have unknown source/quality. No search volumes, neutral rank tracker, competitor backlink metrics, field INP/CWV or statistically valid conversion rates were established. Professional proof and future CRM activation require owner involvement. Valid markup, sitemap discovery and implementation are separate from indexing, clicks, inquiries and clients.
 
 ## 36. Next review
 
