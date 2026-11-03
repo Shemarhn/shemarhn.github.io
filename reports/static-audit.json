@@ -1,13 +1,14 @@
 {
-  "date": "2026-11-03T03:01:52.956Z",
-  "htmlPages": 32,
-  "localLinksChecked": 1156,
-  "jsonldDocuments": 32,
-  "sitemapURLs": 26,
+  "date": "2026-11-03T14:00:46.885Z",
+  "htmlPages": 36,
+  "localLinksChecked": 1319,
+  "jsonldDocuments": 36,
+  "sitemapURLs": 30,
+  "rssArticles": 5,
   "credibilityLogos": 11,
   "credibilityLogoBytes": 47773,
-  "homepageHTMLGzip": 12225,
-  "totalCSS": 61929,
+  "homepageHTMLGzip": 12797,
+  "totalCSS": 63019,
   "totalJS": 141081,
   "failures": []
 }

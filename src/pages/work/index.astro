@@ -2,23 +2,52 @@
 import Layout from '../../layouts/Layout.astro';
 import PageHero from '../../components/PageHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import ProfessionalWorkCard from '../../components/ProfessionalWorkCard.astro';
 import { projects } from '../../data/site';
+import { professionalWork } from '../../data/professional-work';
 ---
 
 <Layout
-  title="Infrastructure Case Studies & Engineering Labs"
-  description="Inspect Shemar Marks’s Northstar AWS recovery, Cedarfield Linux hardening, and Harborlight operations automation labs. Implementation, evidence, and honest limits."
+  title="Professional Work, Internal Projects & Engineering Labs"
+  description="Explore Shemar Marks’s ProxCenter documentation work, Neilus delivery application, internal Orbit CRM, and executed cloud, Linux, and automation labs."
 >
   <PageHero
     label="SELECTED WORK / EVIDENCE INCLUDED"
-    title="Built. Tested."
-    accent="Documented."
-    description="Engineering stories with the architecture, implementation, and validation behind them. Each project below is an executed synthetic engagement, not a paid client project."
+    title="The work."
+    accent="The context."
+    description="Professional documentation and application development, software built for my own practice, and executed infrastructure labs. Each example identifies my role, its status, and the evidence available."
   />
+  <section class="work-directory section wrap" aria-labelledby="professional-work-heading">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">PROFESSIONAL WORK & INTERNAL PRODUCTS</p>
+        <h2 id="professional-work-heading">Experience with a clear scope.</h2>
+      </div>
+      <p>
+        Consulting, employment-related development, and an internal product. Each summary states the
+        engagement type and delivery status.
+      </p>
+    </div>
+    <div class="projects-grid">
+      {professionalWork.map((work) => (
+        <ProfessionalWorkCard work={work} />
+      ))}
+    </div>
+  </section>
   <section class="work-directory section wrap">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">EXECUTED ENGINEERING LABS</p>
+        <h2>Implementation you can inspect.</h2>
+      </div>
+      <p>
+        These three projects are executed synthetic engagements, with recorded checks and public
+        evidence repositories.
+      </p>
+    </div>
     <div class="projects-grid">
       {projects.map((project, index) => (
-        <ProjectCard project={project} index={index} headingLevel={2} />
+        <ProjectCard project={project} index={index} />
       ))}
     </div>
     <div class="scope-note">

@@ -1,0 +1,75 @@
+---
+import Icon from './Icon.astro';
+import type { ProfessionalWork } from '../data/professional-work';
+interface Props {
+  work: ProfessionalWork;
+}
+const { work } = Astro.props;
+---
+
+<a class="professional-work-card" href={`/work/${work.slug}/`} data-track="case_study_click">
+  <p class="eyebrow">{work.classification}</p>
+  <h3>
+    {work.name}
+    <span class="blue">.</span>
+  </h3>
+  <p class="work-title">{work.title}</p>
+  <p class="work-summary">{work.summary}</p>
+  <div class="work-card-footer">
+    <p>{work.status}</p>
+    <span class="text-link">
+      Read the work <Icon size={16} />
+    </span>
+  </div>
+</a>
+
+<style>
+  .professional-work-card {
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    min-width: 0;
+    border: 1px solid var(--line);
+    background: linear-gradient(145deg, #102039, var(--surface));
+    transition: border-color 0.2s;
+  }
+  .professional-work-card:hover {
+    border-color: var(--blue);
+  }
+  .professional-work-card .eyebrow {
+    font-size: 9px;
+    line-height: 1.7;
+    color: #b2c2d9;
+    margin-bottom: 24px;
+  }
+  h3 {
+    font-size: clamp(1.6rem, 2.5vw, 2rem);
+    letter-spacing: -0.04em;
+    overflow-wrap: anywhere;
+  }
+  .work-title {
+    margin-top: 16px;
+    color: #e2e9f5;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .work-summary {
+    font-size: 12px;
+    line-height: 1.8;
+    margin-block: 16px 28px;
+  }
+  .work-card-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+  .work-card-footer > p {
+    color: #b2c2d9;
+    font-size: 11px;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .work-card-footer .text-link {
+    font-size: 11px;
+  }
+</style>

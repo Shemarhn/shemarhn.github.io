@@ -4,6 +4,7 @@ import Layout from '../../layouts/Layout.astro';
 import Icon from '../../components/Icon.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { services, projects, site } from '../../data/site';
+import { professionalWork } from '../../data/professional-work';
 export async function getStaticPaths() {
   const posts = await getCollection(
     'insights',
@@ -133,10 +134,18 @@ const related = allPosts
         <p>
           {d.relatedCases.map((slug) => {
             const p = projects.find((p) => p.slug === slug);
-            return (
-              p && (
+            const professional = professionalWork.find((work) => work.slug === slug);
+            return p ? (
+              <>
+                <a href={`/work/${p.slug}/`}>Lab case study: {p.name}</a>
+                <br />
+              </>
+            ) : (
+              professional && (
                 <>
-                  <a href={`/work/${p.slug}/`}>Lab case study: {p.name}</a>
+                  <a href={`/work/${professional.slug}/`}>
+                    {professional.classification}: {professional.name}
+                  </a>
                   <br />
                 </>
               )

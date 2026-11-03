@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Icon from './Icon.astro';
+import { services, site } from '../data/site';
+import type { ProfessionalWork } from '../data/professional-work';
+
+interface Props {
+  work: ProfessionalWork;
+}
+
+const { work } = Astro.props;
+const relatedServices = work.relatedServices.map((slug) =>
+  services.find((service) => service.slug === slug)!,
+);
+const primaryService = relatedServices[0];
+const contactUrl = `/contact/?service=${encodeURIComponent(primaryService.name)}&cta=Professional%20work&campaign=${encodeURIComponent(work.name)}`;
+const schema = {
+  '@type': 'CreativeWork',
+  '@id': `${site.url}/work/${work.slug}/#summary`,
+  name: `${work.name} — ${work.title}`,
+  description: work.summary,
+  url: `${site.url}/work/${work.slug}/`,
+  author: { '@id': `${site.url}/#person` },
+  genre: work.classification,
+};
+---
+
+<Layout title={`${work.name} — ${work.title}`} description={work.summary} schema={schema}>
+  <Breadcrumbs section="Work" href="/work/" current={work.name} />
+  <section
+    class="page-hero case-hero wrap"
+    data-work-kind={work.kind}
+    data-work-status={work.state}
+  >
+    <p class="eyebrow">WORK SUMMARY / {work.classification}</p>
+    <h1>
+      {work.name}
+      <span class="blue">.</span>
+    </h1>
+    <div class="page-hero-bottom">
+      <p>{work.summary}</p>
+      <a class="text-link" href={contactUrl}>
+        Discuss similar work <Icon size={17} />
+      </a>
+    </div>
+    <div class="tag-list">
+      {work.tags.map((tag) => (
+        <span class="tag">{tag}</span>
+      ))}
+    </div>
+  </section>
+  <section class="content-grid section wrap">
+    <aside>
+      <p class="eyebrow">THE CONTRIBUTION</p>
+      <a href="#role">My role</a>
+      <a href="#scope">The scope</a>
+      {work.approach.length > 0 && <a href="#approach">How I approached it</a>}
+      <a href="#status">Status & evidence boundaries</a>
+      <a href="#services">Related services</a>
+    </aside>
+    <article class="prose">
+      <h2 id="role">{work.title}.</h2>
+      <p>{work.role}</p>
+      <p>{work.context}</p>
+      <h2 id="scope">The scope of the contribution.</h2>
+      <ul>
+        {work.deliverables.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+      {work.approach.length > 0 && (
+        <>
+          <h2 id="approach">How I approached the work.</h2>
+          <ol>
+            {work.approach.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ol>
+        </>
+      )}
+      <h2 id="status">Status and evidence boundaries.</h2>
+      <div class="case-result">
+        <p class="eyebrow">{work.status}</p>
+        <p>{work.statusDetail}</p>
+      </div>
+      <div class="scope-note">
+        <p>{work.limits}</p>
+      </div>
+      <h2 id="services">Where this experience can help.</h2>
+      <ul>
+        {relatedServices.map((service) => (
+          <li>
+            <a href={`/services/${service.slug}/`}>{service.name}</a> — {service.summary}
+          </li>
+        ))}
+      </ul>
+      <p>
+        Each new engagement starts with your environment, access boundaries, and acceptance checks.
+        Review <a href="/pricing/">engagements and pricing</a> or{' '}
+        <a href={contactUrl}>describe the work you need</a> to begin a scope.
+      </p>
+      <p>
+        <a href="/work/">Explore the other work summaries and engineering labs</a>.
+      </p>
+    </article>
+  </section>
+  <section class="callout wrap">
+    <div>
+      <h2>Have a related problem to solve?</h2>
+      <p>Start with a short, sanitized description of the system and the outcome you need.</p>
+    </div>
+    <a class="button" href={contactUrl}>
+      Discuss a project <Icon size={18} />
+    </a>
+  </section>
+</Layout>

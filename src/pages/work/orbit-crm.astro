@@ -1,0 +1,7 @@
+---
+import ProfessionalWorkPage from '../../components/ProfessionalWorkPage.astro';
+import { professionalWork } from '../../data/professional-work';
+const work = professionalWork.find((item) => item.slug === 'orbit-crm')!;
+---
+
+<ProfessionalWorkPage work={work} />

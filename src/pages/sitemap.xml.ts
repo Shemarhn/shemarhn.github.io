@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import { site, services, projects } from '../data/site';
+import { professionalWork } from '../data/professional-work';
 export async function GET() {
   const posts = await getCollection(
     'insights',
@@ -17,6 +18,7 @@ export async function GET() {
     '/privacy/',
     ...services.map((s) => `/services/${s.slug}/`),
     ...projects.map((p) => `/work/${p.slug}/`),
+    ...professionalWork.map((p) => `/work/${p.slug}/`),
     ...posts.map((p) => `/insights/${p.id}/`),
   ];
   return new Response(
