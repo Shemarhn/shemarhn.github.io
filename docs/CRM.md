@@ -1,6 +1,8 @@
 # CRM integration contract v1
 
-The production receiver is Orbit v0.2. Set `CRM_API_URL` to the Orbit HTTPS ingestion endpoint, normally `https://<orbit-host>/api/v1/website-inquiries`, and `CRM_API_TOKEN` to a dedicated Orbit API token with only the `crm.write` scope. The endpoint may sit behind Cloudflare Tunnel, authenticated at the application layer. Tunnel the Orbit API, not Proxmox management. Do not expose ports or make website receipt depend on the tunnel.
+The intended receiver is Orbit v0.2. **Owner clarification — 3 November 2026:** the CRM has not yet been deployed or activated. Pending website-to-CRM jobs are expected and intentionally await activation; no retry or configuration change is needed now. The audit measured two pending CRM jobs and two delivered acknowledgment email jobs. When Orbit is ready, validate the complete integration and reconcile the pending inquiries without duplication.
+
+For that later activation, set `CRM_API_URL` to the Orbit HTTPS ingestion endpoint, normally `https://<orbit-host>/api/v1/website-inquiries`, and `CRM_API_TOKEN` to a dedicated Orbit API token with only the `crm.write` scope. The endpoint may sit behind Cloudflare Tunnel, authenticated at the application layer. Tunnel the Orbit API, not Proxmox management. Do not expose ports or make website receipt depend on the tunnel.
 
 ## Request
 

@@ -4,6 +4,7 @@ import PageHero from '../../components/PageHero.astro';
 import Icon from '../../components/Icon.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { serviceSearch } from '../../data/service-search';
+import { serviceEngagements } from '../../data/service-engagements';
 import { services, projects, site } from '../../data/site';
 import { getCollection } from 'astro:content';
 export function getStaticPaths() {
@@ -11,6 +12,10 @@ export function getStaticPaths() {
 }
 const { service: s } = Astro.props;
 const search = serviceSearch[s.slug];
+const engagement = serviceEngagements[s.slug];
+const connectedServices = engagement.related.map((slug) =>
+  services.find((service) => service.slug === slug)!,
+);
 const insights = await getCollection(
   'insights',
   ({ data }) =>
@@ -37,6 +42,11 @@ const faq = {
   '@id': `${site.url}/services/${s.slug}/#faq`,
   mainEntity: [
     { '@type': 'Question', name: s.faq[0], acceptedAnswer: { '@type': 'Answer', text: s.faq[1] } },
+    {
+      '@type': 'Question',
+      name: engagement.question,
+      acceptedAnswer: { '@type': 'Answer', text: engagement.answer },
+    },
   ],
 };
 ---
@@ -65,7 +75,8 @@ const faq = {
       <a href="#deliverables">What you receive</a>
       <a href="#approach">How I work</a>
       <a href="#scope">Scope & boundaries</a>
-      <a href={`/work/${project.slug}/`}>Related lab: {project.name} ↗</a>
+      <a href="#evidence">Relevant evidence</a>
+      <a href="#first-discussion">What to share first</a>
     </aside>
     <div class="prose">
       <h2>{s.short}</h2>
@@ -101,14 +112,42 @@ const faq = {
           a change.
         </p>
       </div>
-      <h2>Engineering you can inspect.</h2>
-      <p>
-        {project.summary} The <a href={`/work/${project.slug}/`}>{project.name} case study</a>{' '}
-        documents the implementation, checks, and limits of an executed synthetic lab.
-      </p>
+      <h2 id="evidence">Engineering you can inspect.</h2>
+      {s.slug === 'websites' ? (
+        <p>
+          This website is a working example of my website engineering: static service and article
+          pages, a custom Cloudflare Worker, inquiry storage, and separate email delivery tasks.
+          Inspect the{' '}
+          <a
+            href="https://github.com/Shemarhn/shemarhn.github.io"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            website source and architecture documentation
+          </a>{' '}
+          to see the implementation. It is my own consulting site, not a client case study or
+          evidence of a client’s sales results.
+        </p>
+      ) : (
+        <p>
+          {project.summary} The <a href={`/work/${project.slug}/`}>{project.name} case study</a>{' '}
+          documents the implementation, checks, and limits of an executed synthetic lab.
+        </p>
+      )}
+      {s.slug === 'infrastructure-documentation' && (
+        <p>
+          My <a href="/about/">professional background</a> also includes a paid enterprise
+          documentation review. Client material remains private; the public lab runbooks show
+          documentation you can inspect without implying that they are paid client work.
+        </p>
+      )}
       <details class="faq">
         <summary>{s.faq[0]}</summary>
         <p>{s.faq[1]}</p>
+      </details>
+      <details class="faq">
+        <summary>{engagement.question}</summary>
+        <p>{engagement.answer}</p>
       </details>
       {s.slug === 'cloud-infrastructure' && (
         <>
@@ -130,12 +169,14 @@ const faq = {
       )}
       {s.slug === 'proxmox-virtualization' && (
         <>
-          <h2>Prepare for a useful first assessment.</h2>
+          <h2>Migration readiness before a cutover.</h2>
           <p>
-            Bring an inventory of hosts and guests, current hypervisor versions, storage layout and
-            free capacity, network/VLAN mappings, backup destinations, and the services that cannot
-            be interrupted. Share sanitized summaries first; credentials and confidential
-            configuration do not belong in the contact form.
+            A readiness review should resolve guest compatibility, destination capacity, storage and
+            network mappings, a representative pilot, and application acceptance checks. Use the{' '}
+            <a href="/insights/proxmox-migration-readiness-checklist/">
+              Proxmox migration readiness checklist
+            </a>{' '}
+            to prepare the decisions before a cutover is scheduled.
           </p>
           <p>
             A snapshot alone does not establish an independent recovery path. Identify which copies
@@ -164,15 +205,19 @@ const faq = {
       )}
       <h2>Connected services.</h2>
       <p>
-        {services
-          .filter((x) => x.slug !== s.slug && [s.category, 'Operate'].includes(x.category))
-          .slice(0, 3)
-          .map((x, i) => (
-            <>
-              <a href={`/services/${x.slug}/`}>{x.name}</a>
-              {i < 2 ? ' · ' : ''}
-            </>
-          ))}
+        {connectedServices.map((x, i) => (
+          <>
+            <a href={`/services/${x.slug}/`}>{x.name}</a>
+            {i < connectedServices.length - 1 ? ' · ' : ''}
+          </>
+        ))}
+      </p>
+      <h2 id="first-discussion">A useful first discussion.</h2>
+      <p>{engagement.intake}</p>
+      <p>
+        Send a short summary through the contact form. Keep passwords, access tokens, customer data,
+        and private configuration out of the inquiry; any necessary access is arranged after the
+        scope and permissions are agreed.
       </p>
       <p>
         Review <a href="/pricing/">engagements and pricing expectations</a>,{' '}

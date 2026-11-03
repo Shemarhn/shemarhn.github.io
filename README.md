@@ -52,6 +52,8 @@ The HTTP smoke test needs the local Worker and writes synthetic records only to 
 
 ## Documentation
 
+- [Current organic-growth baseline, changes and 30/60/90-day plan](docs/ORGANIC-GROWTH-2026-11-02.md)
+- [Weekly acquisition routine and KPI dashboard](docs/WEEKLY-ORGANIC-WORKFLOW.md)
 - [Cloudflare deployment and credentials](docs/LAUNCH.md)
 - [Architecture, security, and operations](docs/ARCHITECTURE.md)
 - [CRM contract](docs/CRM.md)

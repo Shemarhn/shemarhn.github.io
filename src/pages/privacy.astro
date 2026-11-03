@@ -8,7 +8,7 @@ import PageHero from '../components/PageHero.astro';
   description="How Shemar Marks handles project inquiries, reference submissions, permissions, and privacy-respectful website measurement."
 >
   <PageHero
-    label="PRIVACY / UPDATED 27 OCTOBER 2026"
+    label="PRIVACY / UPDATED 2 NOVEMBER 2026"
     title="Your details."
     accent="Handled with care."
     description="This notice explains how information submitted through this website is used. For questions or requests, contact hello@shemarmarks.com."
@@ -24,9 +24,9 @@ import PageHero from '../components/PageHero.astro';
     <p>
       The inquiry form collects your name, email, project details, selected service, timeline, and
       any optional company, website, or budget information you provide. It also records the
-      submitting page, CTA, landing page, referrer, campaign parameters, and submission time. This
-      information is used to respond, scope work, and understand which pages generate useful
-      inquiries.
+      submitting page, CTA, and submission time. When measurement is enabled, it also records the
+      first landing page, referrer, coarse traffic source, and campaign parameters. This information
+      is used to respond, scope work, and understand which pages generate useful inquiries.
     </p>
     <p>
       Submissions are stored at the edge before an attempt to synchronize them to a private CRM or
@@ -46,9 +46,12 @@ import PageHero from '../components/PageHero.astro';
     <p>
       Please do not submit passwords, tokens, or sensitive business records. Access to submissions
       is restricted. Spam-prevention counters use a short-lived salted hash of the network address
-      rather than retaining the raw address in the application database. Unconverted inquiries and
-      pending references should be reviewed for deletion within 12 months; active engagement records
-      may need to be retained for operational or contractual reasons.
+      rather than retaining the raw address in the application database. Website-held inquiries
+      older than 365 days are automatically removed after delivery to the private CRM is confirmed;
+      undelivered inquiries remain available for recovery. Pending, rejected, and needs-changes
+      references older than 365 days are also removed. Approved references remain until removed.
+      Copies in the CRM or email are handled separately and may need to be retained for operational
+      or contractual reasons. Contact me to request removal.
     </p>
     <h2>Website measurement.</h2>
     <p>
@@ -57,8 +60,11 @@ import PageHero from '../components/PageHero.astro';
       coarse Google or Bing organic-search category is inferred from the referrer or explicit
       organic campaign tags and retained within the current tab; aggregate counts store only the
       event name, page path, day, and count. Search terms and full referrer URLs are not sent with
-      interaction events. Form attribution uses session storage within the current tab. Do Not Track
-      and Global Privacy Control disable first-party interaction measurement.
+      interaction events. Form attribution distinguishes search, direct, referral, paid, and tagged
+      campaign arrivals using session storage within the current tab. These categories are
+      estimates, not verified identities. Do Not Track, Global Privacy Control, and the preference
+      below disable first-party interaction measurement and retention of this optional first-visit
+      context.
     </p>
     <div class="privacy-controls">
       <label class="checkbox">
@@ -66,8 +72,8 @@ import PageHero from '../components/PageHero.astro';
         Disable first-party interaction measurement on this device.
       </label>
       <p class="small">
-        This stores a local preference. Essential spam protection and submitted inquiry metadata
-        still apply.
+        This stores a local preference. Essential spam protection and the details you submit in an
+        inquiry still apply.
       </p>
     </div>
     <h2>External links.</h2>
@@ -85,6 +91,7 @@ import PageHero from '../components/PageHero.astro';
       checkbox.addEventListener('change', () => {
         try {
           localStorage.setItem('sm-analytics', checkbox.checked ? 'off' : 'on');
+          if (checkbox.checked) sessionStorage.removeItem('sm-attribution');
         } catch {}
       });
     }

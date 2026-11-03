@@ -1,0 +1,327 @@
+{
+  "date": "2026-11-03T02:48:00.984Z",
+  "pages": 25,
+  "requests": 55,
+  "rows": [
+    {
+      "url": "https://shemarmarks.com/sitemap.xml",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/work/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/about/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/pricing/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/contact/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/references/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/insights/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/privacy/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/cloud-infrastructure/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/linux-systems/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/devops-infrastructure-as-code/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/backup-disaster-recovery/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/automation/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/infrastructure-documentation/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/maintenance/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/agency-msp-partnership/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/websites/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/proxmox-virtualization/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/work/northstar/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/work/cedarfield/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/work/harborlight/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/insights/a-backup-is-not-a-recovery-plan/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/insights/automations-need-a-failure-path/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/insights/linux-hardening-start-with-a-baseline/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/robots.txt",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/",
+      "status": 200,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/guardsman-beryllium.webp",
+      "status": 200,
+      "bytes": 11870
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/wisynco.webp",
+      "status": 200,
+      "bytes": 8134
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/vmware.svg",
+      "status": 200,
+      "bytes": 6551
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/proxmox.webp",
+      "status": 200,
+      "bytes": 3476
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/microsoft.webp",
+      "status": 200,
+      "bytes": 1742
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/aws.svg",
+      "status": 200,
+      "bytes": 3743
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/wildix.webp",
+      "status": 200,
+      "bytes": 4306
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/odoo.svg",
+      "status": 200,
+      "bytes": 590
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/zoho.svg",
+      "status": 200,
+      "bytes": 3561
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/lenovo.svg",
+      "status": 200,
+      "bytes": 1475
+    },
+    {
+      "url": "https://shemarmarks.com/assets/previous-work/proxcenter.svg",
+      "status": 200,
+      "bytes": 2325
+    },
+    {
+      "url": "http://shemarmarks.com/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "http://www.shemarmarks.com/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "https://www.shemarmarks.com/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "http://shemar-marks.shemarmarks.workers.dev/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "https://shemar-marks.shemarmarks.workers.dev/services/index.html?source=audit",
+      "status": 301,
+      "location": "https://shemarmarks.com/services/?source=audit",
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/not-a-real-page-for-deployment-audit/",
+      "status": 404,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/.git/config",
+      "status": 301,
+      "location": "https://shemarmarks.com/.git/config/",
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/.git/config/",
+      "status": 404,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/wrangler.jsonc",
+      "status": 404,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/admin/",
+      "status": 302,
+      "location": "https://cold-sun-e600.cloudflareaccess.com/cdn-cgi/access/login/shemarmarks.com?kid=69aef313d7f7ff9f13e5a542f694b0217abdefda51fc6219afc87c5e33141975&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjljNzViNTE4NmQxMDZjYmVkYmFlMTUyMTE1MjkwZjllZTY1NjM5MTc0MThiOWQ5NjdmNTA5NWEyMTU3YTJjYTMifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjY5YWVmMzEzZDdmN2ZmOWYxM2U1YTU0MmY2OTRiMDIxN2FiZGVmZGE1MWZjNjIxOWFmYzg3YzVlMzMxNDE5NzUiLCJob3N0bmFtZSI6InNoZW1hcm1hcmtzLmNvbSIsInJlZGlyZWN0X3VybCI6Ii9hZG1pbi8iLCJzZXJ2aWNlX3Rva2VuX3N0YXR1cyI6ZmFsc2UsImlzX3dhcnAiOmZhbHNlLCJpc19nYXRld2F5IjpmYWxzZSwiZXhwIjoxNzkzNjc0Mzc5LCJuYmYiOjE3OTM2NzQwNzksImlhdCI6MTc5MzY3NDA3OSwiYXV0aF9zdGF0dXMiOiJOT05FIiwibXRsc19hdXRoIjp7ImNlcnRfaXNzdWVyX2RuIjoiIiwiY2VydF9zZXJpYWwiOiIiLCJjZXJ0X2lzc3Vlcl9za2kiOiIiLCJjZXJ0X3ByZXNlbnRlZCI6ZmFsc2UsImNvbW1vbl9uYW1lIjoiIiwiYXV0aF9zdGF0dXMiOiJOT05FIn0sInJlYWxfY291bnRyeSI6IkpNIiwiYXBwX3Nlc3Npb25faGFzaCI6IjdjZWI3OWQ4ZDUxYjI5MGUwNDMzNDEwYzZhMWRlMjMyMWZlYmZmNWFkNTQ0YTE2NjEzOGY3MTlhN2E4ZjFmOGEifQ.WX65Bs2iFiee-LFXVQNeCiKub1XfpIKFD9cekcAtdKWd6_6tQpER4armHhRNMo20_syfl90k3z8tHZazzvmCE-2dU6DsdWGEsLpwtLGj7-QtY8BjLPxsb3TF7V8l0wVJM_Z30EeLrJ-kwM3TsuPmvD0IKx1tnaDxijyVVguzrQKCJjGWmBHotvMU2ydb69q4ElJZRM1mNKFNtxHAx517HHF5jlJ2ypQ2-Yhj9MkFLf2lR_ZAPFdPDHXqD6ipu-IAKDhx5m0zUocf6lj6TYF7Vqixgda6r30NyaeX_lYVkelSR7g93_NqcusVEg9P1_qkt3jXRIy-KvGaKurRqYBcuw&redirect_url=%2Fadmin%2F",
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/api/admin/inquiries",
+      "status": 302,
+      "location": "https://cold-sun-e600.cloudflareaccess.com/cdn-cgi/access/login/shemarmarks.com?kid=69aef313d7f7ff9f13e5a542f694b0217abdefda51fc6219afc87c5e33141975&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjljNzViNTE4NmQxMDZjYmVkYmFlMTUyMTE1MjkwZjllZTY1NjM5MTc0MThiOWQ5NjdmNTA5NWEyMTU3YTJjYTMifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjY5YWVmMzEzZDdmN2ZmOWYxM2U1YTU0MmY2OTRiMDIxN2FiZGVmZGE1MWZjNjIxOWFmYzg3YzVlMzMxNDE5NzUiLCJob3N0bmFtZSI6InNoZW1hcm1hcmtzLmNvbSIsInJlZGlyZWN0X3VybCI6Ii9hcGkvYWRtaW4vaW5xdWlyaWVzIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MzY3NDM3OSwibmJmIjoxNzkzNjc0MDc5LCJpYXQiOjE3OTM2NzQwNzksImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJKTSIsImFwcF9zZXNzaW9uX2hhc2giOiI0ZTdiYTRjZDY4NzlmNjUyZTRlMTZiNTFjNzFlZjhhY2Q0MTgxZWMxZTQ4ZjVjMjE1ZGYzYWMxMTY0ZDdhNzJhIn0.ecDpN4WKYUlUCDRqV3J36NUUtacrWTXXYZy8GT2zNnQd5JHVQAlrGebQS9VgDyVoZ653vHJxaRTYlYocucGBgEnYi4lTiUiVDwxS-DutlABCYK5gpElbhFpelhVZUlZGrYjugYnefSw90MmrwBuG3r86nLHDsX1wdrsvkHTAG3tnqz6J62f_OWcl00EzHyAMWZdNtI29e6z0cCADdMs4U3x6zYhFbwaixmCehQc-QSG23OxSfv_jd0aol97A4US_k4Yru7JjO9qqBAheWymk3P5by2Dez_awZ1Y8Rz0Y0hOvyIPFYeFaW-M6zT6wbWY8wki6wgGSBeu0GnkKl1-Z3A&redirect_url=%2Fapi%2Fadmin%2Finquiries",
+      "robots": null
+    },
+    {
+      "url": "https://shemar-marks-staging.shemarmarks.workers.dev/",
+      "status": 200,
+      "location": null,
+      "robots": "noindex, nofollow"
+    },
+    {
+      "url": "https://shemarhn.github.io/",
+      "status": 404,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarhn.github.io/sitemap.xml",
+      "status": 404,
+      "location": null,
+      "robots": null
+    },
+    {
+      "url": "https://shemarmarks.com/deployment.json",
+      "status": 200,
+      "location": null,
+      "robots": null
+    }
+  ],
+  "failures": []
+}
