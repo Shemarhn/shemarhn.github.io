@@ -1,5 +1,6 @@
 // Read-only public verification; never submits forms or sends email.
 import { writeFile } from 'node:fs/promises';
+import { hasLegacyIdentity } from './legacy-identity.mjs';
 const failures = [];
 const rows = [];
 const origin = 'https://shemarmarks.com';
@@ -45,7 +46,7 @@ for (const url of urls) {
   check(!/name="robots" content="[^"]*noindex/.test(body), `${url}: noindex meta`);
   check(body.includes(`rel="canonical" href="${url}"`), `${url}: canonical mismatch`);
   check(body.includes(`property="og:url" content="${url}"`), `${url}: OG mismatch`);
-  check(!/shemarhn\.github\.io|shemarmarks\.tech@gmail\.com/.test(body), `${url}: legacy identity`);
+  check(!hasLegacyIdentity(body), `${url}: legacy identity`);
   check(body.includes('hello@shemarmarks.com'), `${url}: business email missing`);
   for (const match of body.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)) {
     try {
