@@ -1,4 +1,4 @@
-import { searchChannel } from '../../shared/analytics';
+import { firstTouch, measurementAllowed } from '../../shared/analytics';
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const root = document.documentElement;
 if (import.meta.env.PUBLIC_QA_AUDIT === 'true') import('./qa');
@@ -41,56 +41,48 @@ document.addEventListener('keydown', (event) => {
   }
 });
 // UTM and referrer persist within this tab only; no cookies or third-party identifier.
+function canMeasure() {
+  let optedOut = false;
+  try {
+    optedOut = localStorage.getItem('sm-analytics') === 'off';
+  } catch {}
+  return measurementAllowed(
+    navigator.doNotTrack,
+    Boolean((navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl),
+    optedOut,
+  );
+}
 export function attribution(): Record<string, string> {
   const q = new URLSearchParams(location.search);
-  let prior: Record<string, string> = {};
-  try {
-    prior = JSON.parse(sessionStorage.getItem('sm-attribution') || '{}');
-  } catch {}
-  const fresh: Record<string, string> = {};
-  for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']) {
-    const value = q.get(key);
-    if (value) fresh[key] = value.slice(0, 200);
+  let stored: Record<string, string> = {};
+  if (canMeasure()) {
+    let prior: unknown;
+    try {
+      prior = JSON.parse(sessionStorage.getItem('sm-attribution') || '{}');
+    } catch {}
+    stored = firstTouch(prior, location.pathname, document.referrer, location.origin, q);
+    try {
+      sessionStorage.setItem('sm-attribution', JSON.stringify(stored));
+    } catch {}
+  } else {
+    try {
+      sessionStorage.removeItem('sm-attribution');
+    } catch {}
   }
-  const stored = {
-    ...prior,
-    ...fresh,
-    landing_page: prior.landing_page || location.pathname,
-    referrer: prior.landing_page ? prior.referrer || '' : document.referrer.slice(0, 500),
-    traffic_channel: prior.landing_page
-      ? prior.traffic_channel || ''
-      : searchChannel(
-          document.referrer,
-          fresh.utm_medium,
-          fresh.utm_source,
-          q.has('gclid') || q.has('msclkid'),
-        ),
-  };
-  try {
-    sessionStorage.setItem('sm-attribution', JSON.stringify(stored));
-  } catch {}
   return {
     ...stored,
     page: location.pathname,
     cta: q.get('cta') || 'Direct contact',
     source: q.get('source') || 'Website',
-    campaign: q.get('campaign') || fresh.utm_campaign || prior.utm_campaign || '',
+    campaign: q.get('campaign') || stored.utm_campaign || '',
     submitted_at: new Date().toISOString(),
   };
 }
-const firstVisit = attribution();
-const organicChannel = ['google', 'bing'].includes(firstVisit.traffic_channel)
-  ? firstVisit.traffic_channel
-  : '';
+attribution();
 export function track(name: string, details: Record<string, string> = {}) {
-  if (
-    navigator.doNotTrack === '1' ||
-    (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl
-  )
-    return;
-  try {
-    if (localStorage.getItem('sm-analytics') === 'off') return;
-  } catch {}
+  if (!canMeasure()) return;
+  const channel = attribution().traffic_channel;
+  const organicChannel = channel === 'google' || channel === 'bing' ? channel : '';
   window.dispatchEvent(
     new CustomEvent('sm:analytics', { detail: { name, ...details, page: location.pathname } }),
   );

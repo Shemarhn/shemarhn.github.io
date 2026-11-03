@@ -3,12 +3,20 @@ import Layout from '../../layouts/Layout.astro';
 import Architecture from '../../components/Architecture.astro';
 import Icon from '../../components/Icon.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { projects } from '../../data/site';
+import { projects, services } from '../../data/site';
 export function getStaticPaths() {
   return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 const { project: p } = Astro.props;
 const repo = `https://github.com/Shemarhn/${p.repo}`;
+const relatedServiceSlugs: Record<string, string[]> = {
+  northstar: ['backup-disaster-recovery', 'cloud-infrastructure', 'devops-infrastructure-as-code'],
+  cedarfield: ['linux-systems', 'infrastructure-documentation', 'maintenance'],
+  harborlight: ['automation', 'maintenance', 'backup-disaster-recovery'],
+};
+const relatedServices = relatedServiceSlugs[p.slug].map((slug) =>
+  services.find((service) => service.slug === slug)!,
+);
 ---
 
 <Layout
@@ -60,6 +68,10 @@ const repo = `https://github.com/Shemarhn/${p.repo}`;
       <h2 id="constraints">The constraints shape the system.</h2>
       <p>{p.constraints}</p>
       <h2 id="implementation">The implementation.</h2>
+      <p>
+        My role was the implementation, validation, and documentation of this synthetic lab. The
+        environment and observed outcomes below describe that work, not a paid client engagement.
+      </p>
       <ol>
         {p.approach.map((a) => (
           <li>{a}</li>
@@ -106,17 +118,16 @@ const repo = `https://github.com/Shemarhn/${p.repo}`;
       </p>
       <div class="scope-note">
         <p>
-          Related service:{' '}
-          <a href={`/services/${p.service}/`}>
-            {p.service === 'backup-disaster-recovery'
-              ? 'Backup & Disaster Recovery'
-              : p.service === 'linux-systems'
-                ? 'Linux & Systems'
-                : 'Workflow Automation'}
-          </a>
-          . A production engagement starts with your actual workload, risks, and acceptance
-          criteria.
+          A production engagement starts with your actual workload, risks, and acceptance criteria.
+          Related services:
         </p>
+        <ul>
+          {relatedServices.map((service) => (
+            <li>
+              <a href={`/services/${service.slug}/`}>{service.name}</a>
+            </li>
+          ))}
+        </ul>
       </div>
     </article>
   </section>
