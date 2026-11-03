@@ -6,11 +6,15 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { serviceSearch } from '../../data/service-search';
 import { serviceEngagements } from '../../data/service-engagements';
 import { services, projects, site } from '../../data/site';
+import { professionalWork } from '../../data/professional-work';
 import { getCollection } from 'astro:content';
 export function getStaticPaths() {
   return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
 }
 const { service: s } = Astro.props;
+const professionalEvidence = professionalWork.filter((work) =>
+  work.relatedServices.includes(s.slug),
+);
 const search = serviceSearch[s.slug];
 const engagement = serviceEngagements[s.slug];
 const connectedServices = engagement.related.map((slug) =>
@@ -136,10 +140,25 @@ const faq = {
       )}
       {s.slug === 'infrastructure-documentation' && (
         <p>
-          My <a href="/about/">professional background</a> also includes a paid enterprise
-          documentation review. Client material remains private; the public lab runbooks show
-          documentation you can inspect without implying that they are paid client work.
+          The <a href="/work/proxcenter-documentation/">ProxCenter documentation work summary</a>
+          describes my professional review and operating-guidance contribution. Client material
+          remains private; the public lab runbooks provide separately inspectable examples.
         </p>
+      )}
+      {professionalEvidence.length > 0 && (
+        <>
+          <h3>Related professional and internal work.</h3>
+          <ul>
+            {professionalEvidence.map((work) => (
+              <li>
+                <a href={`/work/${work.slug}/`}>
+                  {work.name} — {work.title}
+                </a>{' '}
+                ({work.classification}; {work.status.toLowerCase()}).
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       <details class="faq">
         <summary>{s.faq[0]}</summary>

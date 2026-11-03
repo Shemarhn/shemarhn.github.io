@@ -2,11 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import ProfessionalWorkCard from '../components/ProfessionalWorkCard.astro';
 import Monogram from '../components/Monogram.astro';
 import AmbientGrid from '../components/AmbientGrid.astro';
 import TechnologyCarousel from '../components/TechnologyCarousel.astro';
 import PreviousWork from '../components/PreviousWork.astro';
 import { services, projects } from '../data/site';
+import { professionalWork } from '../data/professional-work';
 import { getCollection } from 'astro:content';
 const posts = (
   await getCollection(
@@ -197,14 +199,25 @@ const posts = (
       </div>
       <div>
         <p>
-          Real implementation. Recorded checks. Honest limits. These are executed synthetic
-          engagements, clearly labeled as lab work.
+          Professional documentation, delivered application development, an internal product, and
+          executed infrastructure labs. Each example states my role and its current status.
         </p>
         <a href="/work/" class="text-link">
-          All case studies <Icon size={16} />
+          Explore all work <Icon size={16} />
         </a>
       </div>
     </div>
+    <p class="eyebrow" style="margin-bottom:20px">
+      PROFESSIONAL WORK & INTERNAL PRODUCTS
+    </p>
+    <div class="projects-grid" style="margin-bottom:48px">
+      {professionalWork.map((work) => (
+        <ProfessionalWorkCard work={work} />
+      ))}
+    </div>
+    <p class="eyebrow" style="margin-bottom:20px">
+      EXECUTED INFRASTRUCTURE LABS
+    </p>
     <div class="projects-grid">
       {projects.map((project, index) => (
         <div class="reveal">

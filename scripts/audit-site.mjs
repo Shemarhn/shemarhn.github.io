@@ -15,6 +15,7 @@ const files = await walk(root),
 const failures = [],
   titles = new Set(),
   descs = new Set();
+const schemaByPath = new Map();
 let links = 0,
   jsonld = 0;
 for (const file of htmlFiles) {
@@ -36,7 +37,11 @@ for (const file of htmlFiles) {
     check(html.includes(`"${meta}"`), `missing ${meta}`);
   for (const match of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     try {
-      JSON.parse(match[1]);
+      const document = JSON.parse(match[1]);
+      schemaByPath.set(name, [
+        ...(schemaByPath.get(name) || []),
+        ...(document['@graph'] || [document]),
+      ]);
       jsonld++;
     } catch {
       check(false, 'invalid JSON-LD');
@@ -74,6 +79,88 @@ for (const url of sitemapURLs) {
   if (!html.includes(`rel="canonical" href="${url}"`))
     failures.push(`Sitemap canonical mismatch: ${url}`);
 }
+// Explicit work pages must remain discoverable even when they are intentionally
+// kept outside the lab-project collection and its lab-only presentation.
+for (const file of htmlFiles) {
+  const path = file.slice(root.length).replaceAll('\\', '/');
+  if (/^\/work\/[^/]+\/index\.html$/.test(path)) {
+    const url = 'https://shemarmarks.com' + path.replace(/index\.html$/, '');
+    if (!sitemapURLs.includes(url)) failures.push(`Work page absent from sitemap: ${url}`);
+  }
+}
+const workIndex = await readFile(join(root, 'work/index.html'), 'utf8');
+for (const [slug, kind, status] of [
+  ['proxcenter-documentation', 'professional', 'documentation-contribution'],
+  ['neilus-delivery-system', 'employment', 'delivered-launch-pending'],
+  ['orbit-crm', 'internal', 'development-production-pending'],
+]) {
+  const path = `/work/${slug}/index.html`;
+  const file = join(root, path);
+  if (!files.includes(file)) {
+    failures.push(`Required work summary missing: ${slug}`);
+    continue;
+  }
+  const html = await readFile(file, 'utf8');
+  if (
+    !html.includes(`data-work-kind="${kind}"`) ||
+    !html.includes(`data-work-status="${status}"`) ||
+    !html.includes('id="status"') ||
+    !html.includes('class="case-result"')
+  )
+    failures.push(`Work classification/status boundary missing: ${slug}`);
+  if (/SM \/ LAB|RECORDED LAB OUTCOME|An executed synthetic case study/.test(html))
+    failures.push(`Professional/internal work incorrectly uses the lab template: ${slug}`);
+  const graph = schemaByPath.get(path) || [];
+  if (!graph.some((node) => node['@type'] === 'CreativeWork'))
+    failures.push(`Work summary CreativeWork schema missing: ${slug}`);
+  if (graph.some((node) => ['Review', 'AggregateRating'].includes(node['@type'])))
+    failures.push(`Work summary must not imply a testimonial or rating: ${slug}`);
+  if (!workIndex.includes(`href="/work/${slug}/"`))
+    failures.push(`Work summary absent from work index: ${slug}`);
+}
+// RSS, sitemap and the generated BlogPosting must agree. This catches a new
+// article being published in one discovery surface while disappearing in another.
+const rss = await readFile(join(root, 'rss.xml'), 'utf8');
+const rssItems = [...rss.matchAll(/<item>([\s\S]*?)<\/item>/g)].map((match) => ({
+  url: match[1].match(/<link>(.*?)<\/link>/)?.[1],
+  guid: match[1].match(/<guid>(.*?)<\/guid>/)?.[1],
+  date: match[1].match(/<pubDate>(.*?)<\/pubDate>/)?.[1],
+}));
+const articleURLs = sitemapURLs.filter((url) => /\/insights\/[^/]+\/$/.test(url));
+if (new Set(rssItems.map((item) => item.url)).size !== rssItems.length)
+  failures.push('Duplicate RSS article URLs');
+for (const url of articleURLs) {
+  const item = rssItems.find((item) => item.url === url);
+  if (!item || item.guid !== url || !Number.isFinite(Date.parse(item.date || '')))
+    failures.push(`Article missing or invalid in RSS: ${url}`);
+  const path = new URL(url).pathname + 'index.html';
+  const article = schemaByPath.get(path)?.find((node) => node['@type'] === 'BlogPosting');
+  if (
+    !article ||
+    article.mainEntityOfPage !== url ||
+    article.author?.name !== 'Shemar Marks' ||
+    !Number.isFinite(Date.parse(article.datePublished)) ||
+    Date.parse(article.datePublished) > Date.now() ||
+    !Number.isFinite(Date.parse(article.dateModified)) ||
+    Date.parse(article.dateModified) < Date.parse(article.datePublished)
+  )
+    failures.push(`Article schema or publication dates invalid: ${url}`);
+}
+for (const item of rssItems)
+  if (!articleURLs.includes(item.url))
+    failures.push(`RSS article absent from sitemap: ${item.url}`);
+const deliveryArticle = 'https://shemarmarks.com/insights/whatsapp-delivery-system-planning/';
+if (!articleURLs.includes(deliveryArticle))
+  failures.push('WhatsApp planning article absent from sitemap');
+const deliveryArticleFile = join(root, 'insights/whatsapp-delivery-system-planning/index.html');
+if (
+  files.includes(deliveryArticleFile) &&
+  !(await readFile(deliveryArticleFile, 'utf8')).includes('href="/work/neilus-delivery-system/"')
+)
+  failures.push('WhatsApp planning article missing the related professional work');
+const socialFeed = JSON.parse(await readFile(join(root, 'social.json'), 'utf8'));
+if (socialFeed.posts.some((post) => post.slug === 'whatsapp-delivery-system-planning'))
+  failures.push('WhatsApp planning article must not queue social distribution');
 const logoManifest = JSON.parse(await readFile('vendor/previous-work-logos.json', 'utf8'));
 const homeText = homepage.toString();
 if (!homeText.includes('Previously worked with') || homeText.includes('Trusted by'))
@@ -104,6 +191,7 @@ const report = {
   localLinksChecked: links,
   jsonldDocuments: jsonld,
   sitemapURLs: sitemapURLs.length,
+  rssArticles: rssItems.length,
   credibilityLogos: logoManifest.length,
   credibilityLogoBytes: logoManifest.reduce((sum, logo) => sum + logo.bytes, 0),
   homepageHTMLGzip: gzipSync(homepage).length,
