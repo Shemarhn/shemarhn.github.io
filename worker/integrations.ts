@@ -38,6 +38,7 @@ export function crmAdapter(env: Env): CRMAdapter {
           Authorization: `Bearer ${env.CRM_API_TOKEN}`,
           'Content-Type': 'application/json',
           'Idempotency-Key': id,
+          'User-Agent': 'ShemarMarksWebsite/1.0',
         },
         body: JSON.stringify({
           version: 1,
@@ -62,7 +63,8 @@ export function crmAdapter(env: Env): CRMAdapter {
           },
         }),
         signal: timeout(),
-        redirect: 'error',
+        // Workers supports manual/follow; requireOK rejects 3xx without forwarding secrets.
+        redirect: 'manual',
       });
       await requireOK(response, 'CRM');
     },

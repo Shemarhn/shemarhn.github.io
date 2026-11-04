@@ -6,7 +6,7 @@ import worker, { processOutbox } from '../worker/index.ts';
 import extendedWorker from '../worker/entry.ts';
 import { processSocialOutbox, syncSocialDrafts } from '../worker/social.ts';
 import { publicReference, validateModeration } from '../worker/validation.ts';
-import { emailText, emailHtml, gmailMessage } from '../worker/integrations.ts';
+import { emailText, emailHtml, gmailMessage, crmAdapter } from '../worker/integrations.ts';
 import { SignJWT, generateKeyPair, exportJWK } from 'jose';
 import type { Env, Lead } from '../worker/types.ts';
 import { searchChannel } from '../shared/analytics.ts';
@@ -377,6 +377,41 @@ test('admin HTML and API fail closed without valid Cloudflare Access identity', 
   }
   s.db.close();
 });
+test('CRM redirect is rejected without forwarding its credential to another destination', async () => {
+  const original = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async (input, options) => {
+    calls++;
+    assert.equal(String(input), 'https://crm.example/inquiries');
+    assert.equal(options?.redirect, 'manual');
+    assert.equal(new Headers(options?.headers).get('Authorization'), 'Bearer test-only');
+    return new Response(null, { status: 302, headers: { Location: 'https://untrusted.example/' } });
+  };
+  try {
+    await assert.rejects(
+      () =>
+        crmAdapter({
+          CRM_API_URL: 'https://crm.example/inquiries',
+          CRM_API_TOKEN: 'test-only',
+        } as Env).deliver(crypto.randomUUID(), {
+          name: 'Owned test',
+          email: 'test@example.com',
+          company: '',
+          website: '',
+          service: 'Automation',
+          description: 'Synthetic test',
+          timeline: 'Just exploring',
+          budget: '',
+          metadata: {},
+        }),
+      /CRM returned HTTP 302/,
+    );
+    assert.equal(calls, 1);
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
 test('CRM failure does not repeat a successful acknowledgment email', async () => {
   const s = setup();
   await submit(s);
